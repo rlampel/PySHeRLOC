@@ -1,0 +1,2 @@
+# path to your local installation of BlockSQP 2:
+/home/robert/Dokumente/Promotion/NLP_Solvers/BlockSQP/blocksqp-branch/blocksqp
