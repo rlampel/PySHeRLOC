@@ -165,7 +165,7 @@ def select_states(s_init, s_dim, lifting_points):
     Keyword arguments:
         s_init  -- initialization of intermediate variables
         s_dim   -- dimension of the variables
-        bounds  -- bounds for the intermediate variables
+        lifting_points -- points at which to select the states
     """
     sel_states = cs.DM([])
     for i in range(len(lifting_points)):
@@ -176,7 +176,12 @@ def select_states(s_init, s_dim, lifting_points):
 
 
 def random_control(problem, num_control_points, seed=42):
-    """Randomly initialize the vector of control discretizations.
+    """Randomly initialize the vector of control discretizations within the correct bounds.
+
+    Keyword arguments:
+        problem  -- instance of the problem class
+        num_control_points  -- number of control discretizations
+        seed  -- random seed
 
     """
     q_dim = problem.q_dim

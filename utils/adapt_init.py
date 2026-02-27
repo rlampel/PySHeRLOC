@@ -1,6 +1,5 @@
 import numpy as np
 import casadi as cs
-from . import create_nlp
 
 
 def get_best_lam(x_curr, lbx, ubx, g, lbg, ubg, grad_f, grad_g):

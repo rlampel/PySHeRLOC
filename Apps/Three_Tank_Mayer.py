@@ -31,7 +31,7 @@ class problem(BaseOCClass.super_problem):
     def get_init(self):
         init = {}
         init["s_start"] = cs.DM([2., 2., 2., 0.])
-        init["q_start"] = [1., 0., 0.]
+        init["q_start"] = [1. / 3.] * self.q_dim
         init["s_dim"] = self.s_dim
         init["q_dim"] = self.q_dim
         return init

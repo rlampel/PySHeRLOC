@@ -35,7 +35,6 @@ def sort_vars_by_time(prim_vars, grid, s_dim, q_dim):
             sorted_vars = cs.vertcat(sorted_vars, curr_state)
             curr_state_ind += 1
             total_var_count += s_dim
-            # print(f"add lifting point number {i}")
         # iterate over all control points
         for j in range(curr_contr_ind, num_control_points):
             # stop if the control point belongs to the next interval
@@ -46,7 +45,6 @@ def sort_vars_by_time(prim_vars, grid, s_dim, q_dim):
             sorted_vars = cs.vertcat(sorted_vars, curr_contr)
             curr_contr_ind += 1
             total_var_count += q_dim
-            # print(f"add control point number {j}")
 
     # add last state at end of time interval
     if lifting_points[-1]:
@@ -56,8 +54,6 @@ def sort_vars_by_time(prim_vars, grid, s_dim, q_dim):
         sorted_vars = cs.vertcat(sorted_vars, curr_state)
         total_var_count += s_dim
     sparsity_pattern += [total_var_count]
-    # print("Sorted with sparsity pattern: ", sparsity_pattern)
-    # print("Sorting grid: ", sorting_grid)
     return sorted_vars, sparsity_pattern, sorting_grid
 
 

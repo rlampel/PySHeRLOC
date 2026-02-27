@@ -10,64 +10,18 @@ import timeit
 
 # file where the results will be saved
 dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname, "logs/benchmark_iterations.log")
+iter_file = os.path.join(dirname, "logs/benchmark_iters.log")
+time_file = os.path.join(dirname, "logs/benchmark_times.log")
 
 
-problems = [
-    "Van der Pol",
-    "Van der Pol Mayer",
-    "Lotka Volterra",
-    "Lotka Volterra Mayer",
-    "Batch Reactor",
-    "Bioreactor",
-    "Bioreactor Mayer",
-    "Bryson Denham",
-    "Bryson Denham Mayer",
-    "Catalyst Mixing",
-    "Cushioned Oscillation",
-    "Dielectrophoretic Particle",
-    "Double Oscillator",
-    "Ducted Fan",
-    "Egerstedt",
-    "Egerstedt Mayer",
-    "Electric Car",
-    "F8 Aircraft",
-    "F8 Aircraft Mayer",
-    "Fuller",
-    "Fuller Mayer",
-    "Hang Glider",
-    "Hanging Chain Lagrange",
-    "Hanging Chain",
-    "Lotka Competitive",
-    "Lotka Competitive Mayer",
-    "Lotka Shared",
-    "Lotka Shared Mayer",
-    "LQR",
-    "LQR Mayer",
-    "Mountain Car",
-    "Ocean",
-    "Ocean Mayer",
-    "Particle Steering Mayer",
-    "Rao Mease",
-    "Rao Mease Mayer",
-    "Three Tank",
-    "Tubular Reactor",
-    "Tubular Reactor Mayer",
-    "Quadrotor"
-]
+# read list of problems
+with open('benchmark_problems.txt', 'r') as problem_file:
+    problem_names = problem_file.readlines()
 
-problems = [
-    # "Catalyst Mixing",
-    # "Egerstedt",
-    # "Egerstedt Mayer",
-    # "Hang Glider",
-    # "Hanging Chain Lagrange",
-    # "Hanging Chain",
-    "Particle Steering",
-]
+problem_names = [el.strip() for el in problem_names]
 
 oed_problems = [
-    "Lotka OED",
+    # "Lotka OED",
     "Dielectr Particle",
     "Jackson OED",
     "Van der Pol OED"
@@ -82,12 +36,8 @@ lift_options = ["all",
                 "adaptive",
                 "sensitivity"]
 
-solvers = ["BlockSQP 2",
-           "Old BlockSQP",
-           "IPOPT",
-           "fatrop"]
+solvers = ["BlockSQP 2"]
 
-problem_names = problems
 solver_name = solvers[0]
 lifting_type = lift_options[0]
 init_type = "auto"
@@ -98,42 +48,50 @@ exact_hessian = False
 optimize_lamb = False
 optimize_init = False
 log_results = False
-always_auto = False
-auto_condense = True
+always_auto = True
+auto_condense = False
 max_iter = 200
+num_reps = 5
 
-log_mode = "iter"
-# log_mode = "time"
 
-mode = "default"
-# mode = "OED"
+# mode = "default"
+mode = "OED"
 
-# solving loop
-with open(filename, "a") as f:
-    f.write("\n\n")
 
 if mode == "OED":
     problem_names = oed_problems
-else:
-    problem_names = problems
 
-for problem_name in problem_names:  # problem_names:
+for problem_name in problem_names:
     print("SOLVING " + problem_name)
 
-    num_reps = 5
-    seeds = [1, 2, 3, 4, 5]
-    iters = []
+    if mode == "OED":
+        curr_problem = get_problem.get_oed_problem(problem_name)
+    else:
+        curr_problem = get_problem.get_problem(problem_name)
+
+    curr_init_type = init_type
+    ode = curr_problem.get_ode()
+    num_controls = num_control_points
+    num_lifts = num_lifting_points
+    max_t = curr_problem.get_grid_details()
+
+    # log the required numer of iterations
+    with open(iter_file, 'a') as f:
+        output = "\n" + problem_name + ", "
+        f.write(output)
+
+    # log the required real time
+    with open(time_file, 'a') as f:
+        output = "\n" + problem_name + ", "
+        f.write(output)
+
+    # log average time and iterations for current lifting
+    curr_time_log = []
+    curr_iter_log = []
 
     for i in range(num_reps):
-        if mode == "OED":
-            curr_problem = get_problem.get_oed_problem(problem_name)
-        else:
-            curr_problem = get_problem.get_problem(problem_name)
-        curr_init_type = init_type
-        ode = curr_problem.get_ode()
-        num_controls = num_control_points
-        num_lifts = num_lifting_points
-        max_t = curr_problem.get_grid_details()
+        if sum(curr_iter_log) == cs.inf:
+            break
 
         # create grids
         control_points = [i * max_t / num_controls for i in range(num_controls)]
@@ -153,7 +111,7 @@ for problem_name in problem_names:  # problem_names:
         if mode == "default" and problem_name != "Quadrotor":
             print("Add random noise to control")
             # add random noise to controls for default mode
-            np.random.seed(seeds[i])
+            np.random.seed(i)
             noise = np.random.rand(q_init.shape[0]) - 0.5
             q_init += 0.1 * noise
 
@@ -199,7 +157,7 @@ for problem_name in problem_names:  # problem_names:
             refine = 5
         else:
             refine = -1
-        import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
+        import utils.blocksqp_utils.create_blocksqp_problem as blockSQP2
         opts = {}
         opts["exact_hess"] = exact_hessian
         opts['plot_iter'] = False
@@ -212,22 +170,29 @@ for problem_name in problem_names:  # problem_names:
         opts["max_iter"] = max_iter
 
         start_time = timeit.default_timer()
-        num_iter, _, _ = better_ipopt.create_blocksqp_problem(
+        num_iter, _, _ = blockSQP2.create_blocksqp_problem(
             curr_problem, grid, init, [],
             opts, condense_mode=mode
         )
         diff_time = timeit.default_timer() - start_time
-        iters += [num_iter]
 
-        print("Total time: ", diff_time)
+        if num_iter == cs.inf or num_iter >= max_iter:
+            num_inter = cs.inf
+            diff_time = cs.inf
 
-    avg_iter = sum(iters) / len(iters)
+        curr_time_log += [diff_time]
+        curr_iter_log += [num_iter]
 
-    with open(filename, "a") as f:
-        # output = problem_name + " took \t" + str(num_iter) + " iterations\n"
-        if log_mode != "time" or avg_iter == np.inf:
-            output = str(avg_iter) + " " + str(iters) + ", "
-        else:
-            output = str(diff_time) + ", "
+    avg_time = sum(curr_time_log) / num_reps
+    avg_iters = sum(curr_iter_log) / num_reps
+
+    # log the required numer of iterations
+    with open(iter_file, 'a') as f:
+        output = str(avg_iters) + ", "
+        f.write(output)
+
+    # log the required real time
+    with open(time_file, 'a') as f:
+        output = str(avg_time) + ", "
         f.write(output)
 

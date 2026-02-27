@@ -62,10 +62,7 @@ def get_cblock_sizes(x_dim, g, cblocks, cblocks_match):
     for i in range(start_ind, end_ind):
         c_ind = cblocks[i]
         # add previous different block and new cblock
-        # if c_ind - last_cond_ind > 0:
-        #     cblock_sizes += [c_ind - last_cond_ind]
         cblock_sizes += [x_dim]
-        # last_cond_ind = c_ind + x_dim
 
     # add potential last block
     if not cblocks_match[-1]:

@@ -1,5 +1,6 @@
 import casadi as cs
 import numpy as np
+import timeit
 import matplotlib.pyplot as plt
 from .. import create_nlp, adapt_init, penalty
 from . import get_blocksqp_path, hess_block_cond
@@ -73,26 +74,12 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     verbose = input_opts.get("verbose", True)
     plot_iter = input_opts.get("plot_iter", True)
     log_results = input_opts.get("log_results", True)
-    # log_file = opts.get("log_file", "")
 
     opts = blocksqp_options.get_blocksqp_options(exact_hess)
 
     # allow the solver to use indefinite Hessian (approximations) immediately
     if sr1_init is not None or (exact_hess and i_start > 0):
         opts.indef_delay = 0
-
-    #   ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ###
-    # TODO: delete this later
-    # opts.block_hess = 0
-    #   ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ###
-
-    """
-    QPopts = blockSQP.qpOASES_options()
-    QPopts.terminationTolerance = 1e-10
-    QPopts.printLevel = 0
-    QPopts.sparsityLevel = 0
-    opts.qpsol_options = QPopts
-    """
 
     x, lbx, ubx, g, lbg, ubg, J, cblocks, cblock_match = create_nlp.create_nlp(
         curr_problem, grid, ret_cblocks=True
@@ -152,18 +139,9 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
 
     problem = Problemspec()
 
-    # JIT-Optionen
-    jit_opts = {
-        'jit': True,  # Schaltet JIT-Kompilierung ein
-        'jit_cleanup': True,  # Optional: Behält die generierten Dateien bei
-        # Weitere JIT-Optionen können hier gesetzt werden, z.B. Compiler-Flags
-    }
-
     lag_func = cs.Function("lag", [Y, Lam], [func_f(Y) - Lam.T @ func_g(Y)])
     lag_der = cs.Function("lag_der", [Y, Lam], [cs.jacobian(lag_func(Y, Lam), Y)])
     lag_hess = cs.Function("lag_hess", [Y, Lam], [cs.jacobian(lag_der(Y, Lam), Y)])
-
-    import timeit
 
     def lag_hess_print(xi, lam):
         hess_creation_time = timeit.default_timer()
@@ -275,7 +253,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         meth.vars.set_hess2(bfgs_init)
 
     ret = 0
-    # max_iter = 100
     i = i_start
 
     default_init = {}
@@ -386,9 +363,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             canvas.draw()
             canvas.flush_events()
 
-        # constr_viol = penalty.get_violation(func_g(xi_temp), ubg, lbg)
-        # constr_viol = cs.vertcat(constr_viol, penalty.get_violation(xi_temp, ubx, lbx))
-
         if auto_condense:
             # violation of constraints g
             curr_g_eval = np.array(meth.vars.constr).reshape(-1)
@@ -403,7 +377,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             prim_step_norm = float(cs.norm_2(prim_step)**2)
             dual_step_norm = float(cs.norm_2(dual_step)**2)
             step_norm = prim_step_norm + dual_step_norm
-            # step_norm = cs.norm_inf(cs.vertcat(prim_step, dual_step))
 
             curr_prim_norm = cs.norm_2(xi_temp)**2
             curr_dual_norm = cs.norm_2(np.array(lam_temp).reshape(-1))**2
@@ -436,7 +409,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                 print("hessblocks: ", hessblock_sizes)
 
                 from . import create_condenser
-                # condensed_sr1, condensed_bfgs = None, None
                 if exact_hess:
                     condensed_sr1 = None
                 else:
@@ -446,12 +418,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                         xi_temp, lam_temp, grid, hess_type=1, c_start=c_start, c_end=c_end
                     )
 
-                # condensed_bfgs = create_condenser.condense_hessian(
-                #     vblock_sizes, cblock_sizes, hessblock_sizes, vblock_dependencies,
-                #     ubx, lbx, ubg, lbg, problem.grad_f(xi_temp), problem.jac_g, meth.vars,
-                #     xi_temp, lam_temp, grid, hess_type=2, c_start=c_start, c_end=c_end
-                # )
-                # condensed_sr1 = None
                 condensed_bfgs = None
 
                 print("START OVER WITH SMALLER QP")

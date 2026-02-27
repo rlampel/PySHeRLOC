@@ -66,10 +66,6 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
         old_point  -- primal variables of previous step
     """
 
-    # for Quasi-Newton, return the original input
-    # if not exact_hess:
-    #     return xi_temp
-
     # violation of constraints g
     constr_viol = penalty.get_violation(func_g(xi_temp), ubg, lbg)
     constr_viol_fs = penalty.get_violation(func_g(xi_fsinit), ubg, lbg)
@@ -84,7 +80,6 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
         return xi_temp
 
     # objective
-    # mu = np.max(lam_temp)
     mu = np.linalg.norm(lam_temp, np.inf)
     objective = func_f(xi_temp)
     objective_fs = func_f(xi_fsinit)

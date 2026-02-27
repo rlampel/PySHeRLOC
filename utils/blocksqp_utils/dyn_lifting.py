@@ -153,10 +153,7 @@ def best_graph_lift(problem, starting_times, starting_vals, controls, grid, mu=1
                 "control": grid["control"]
             }
             J, punish_state = partial_eval(problem, partial_grid, s_old, controls)
-            # print("current J and viol: ", J, punish_state)
             incidence[j, num_curr_candidates + j] = J + punish_state * mu + eps
-
-            # print("distance without lifting: ", J + punish_state + eps)
 
             for k in range(start_index, stop_index):
                 indx = k - curr_candidates - num_curr_candidates
@@ -168,7 +165,6 @@ def best_graph_lift(problem, starting_times, starting_vals, controls, grid, mu=1
 
                 total_cost = float(J + punish_state * mu + continuity_violation * mu + eps)
                 incidence[j, k] = total_cost
-                # print("distance with lifting: ", J + punish_state + continuity_violation + eps)
 
         curr_candidates += num_curr_candidates
 
@@ -199,7 +195,6 @@ def best_graph_lift(problem, starting_times, starting_vals, controls, grid, mu=1
         return np.unique(best_lifting_points), best_state_indices
 
     best_lifting_points = np.unique(best_lifting_points)
-    # best_lifting_points = convert_lifting(best_lifting_points, grid["time"])
     return best_lifting_points
 
 
@@ -242,3 +237,4 @@ def convert_lifting(input_lift, time_points):
         else:
             output_lift += [0]
     return output_lift
+

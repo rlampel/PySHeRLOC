@@ -73,7 +73,6 @@ def best_init_lift(problem, starting_times, starting_vals, controls, grid, mu=1,
 
         next_time = time_points[curr_lift_point + 1]
         num_new_nodes = get_num_items(starting_times, next_time)
-        # print("number of new nodes: ", num_new_nodes)
         num_candidates_next_layer = num_curr_candidates + num_new_nodes
 
         candidate_times += [next_time] * num_new_nodes
@@ -88,7 +87,6 @@ def best_init_lift(problem, starting_times, starting_vals, controls, grid, mu=1,
 
         for j in range(curr_candidates, curr_candidates + num_curr_candidates):
             # No lifting edge (identity edge)
-
             start_index = curr_candidates + 2 * num_curr_candidates
             stop_index = curr_candidates + 2 * num_curr_candidates + num_new_nodes
             s_old = states[j - curr_candidates][-(num_lift_points - curr_lift_point)]

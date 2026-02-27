@@ -18,6 +18,7 @@ with open('benchmark_problems.txt', 'r') as problem_file:
     problem_names = problem_file.readlines()
 
 problem_names = [el.strip() for el in problem_names]
+problem_names = problem_names
 
 init_types = ["auto",
               "lin",
@@ -38,15 +39,13 @@ init_type = "auto"
 num_lifting_points = 64
 num_control_points = 64
 l1_refinement = False
-exact_hessian = False
+exact_hessian = True
 optimize_lamb = False
 log_results = False
 always_auto = False
-auto_condense = False
+auto_condense = True
 max_iter = 200
 num_reps = 5
-
-time_logs = []
 
 for problem_name in problem_names:
     if mode == "OED":
@@ -151,7 +150,7 @@ for problem_name in problem_names:
 
                     stats = solver.stats()
                     num_iter = stats["iter_count"]
-                    if not stats["success"]:
+                    if not stats["success"] or num_iter >= max_iter:
                         print("Solver failed!")
                         num_iter = cs.inf
                         diff_time = cs.inf
@@ -180,7 +179,8 @@ for problem_name in problem_names:
                     )
                     diff_time = timeit.default_timer() - start_time
 
-                    if num_iter == cs.inf:
+                    if num_iter == cs.inf or num_iter >= max_iter:
+                        num_inter = cs.inf
                         diff_time = cs.inf
 
             curr_time_log += [diff_time]
@@ -198,3 +198,4 @@ for problem_name in problem_names:
         with open(time_file, 'a') as f:
             output = str(avg_time) + ", "
             f.write(output)
+
