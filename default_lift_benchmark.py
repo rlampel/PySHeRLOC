@@ -18,7 +18,12 @@ with open('benchmark_problems.txt', 'r') as problem_file:
     problem_names = problem_file.readlines()
 
 problem_names = [el.strip() for el in problem_names]
-problem_names = problem_names
+oed_problems = [
+    "Lotka OED",
+    "Dielectr Particle",
+    "Jackson OED",
+    "Van der Pol OED"
+]
 
 init_types = ["auto",
               "lin",
@@ -31,9 +36,9 @@ solvers = ["BlockSQP 2",
            "IPOPT"]
 
 # select options
-solver_name = solvers[0]
-mode = "default"
-# mode = "OED"
+solver_name = solvers[1]
+# mode = "default"
+mode = "OED"
 lifting_type = lift_options[0]
 init_type = "auto"
 num_lifting_points = 64
@@ -43,9 +48,12 @@ exact_hessian = True
 optimize_lamb = False
 log_results = False
 always_auto = False
-auto_condense = True
+auto_condense = False
 max_iter = 200
-num_reps = 5
+num_reps = 1
+
+if mode == "OED":
+    problem_names = oed_problems
 
 for problem_name in problem_names:
     if mode == "OED":
@@ -180,7 +188,7 @@ for problem_name in problem_names:
                     diff_time = timeit.default_timer() - start_time
 
                     if num_iter == cs.inf or num_iter >= max_iter:
-                        num_inter = cs.inf
+                        num_iter = cs.inf
                         diff_time = cs.inf
 
             curr_time_log += [diff_time]

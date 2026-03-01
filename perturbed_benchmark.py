@@ -22,8 +22,8 @@ problem_names = [el.strip() for el in problem_names]
 
 oed_problems = [
     # "Lotka OED",
-    "Dielectr Particle",
-    "Jackson OED",
+    # "Dielectr Particle",
+    # "Jackson OED",
     "Van der Pol OED"
 ]
 
@@ -44,7 +44,7 @@ init_type = "auto"
 num_lifting_points = 64
 num_control_points = 64
 l1_refinement = False
-exact_hessian = False
+exact_hessian = True
 optimize_lamb = False
 optimize_init = False
 log_results = False
