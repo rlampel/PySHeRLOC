@@ -40,7 +40,7 @@ def get_blocksqp_options(exact_hess=False):
     opts.max_extra_steps = 0
     opts.enable_premature_termination = True
     opts.max_filter_overrides = 0
-    opts.par_QPs = True
+    opts.par_QPs = False
     opts.qpsol = 'qpOASES'
 
     return opts

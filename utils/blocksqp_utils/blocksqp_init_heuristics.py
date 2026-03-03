@@ -51,7 +51,8 @@ def fsinit_heuristic(xi_temp, sort_grid, grid, ode, s_dim, q_dim,
 
 
 def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
-                 opt_err=1., old_point=None, exact_hess=True):
+                 opt_err=1., old_point=None, exact_hess=True, lag_der=None,
+                 mode="default"):
     """Replace the current states by FSInit if merit and KKT do not get too much worse.
 
     Keyword arguments:
@@ -63,7 +64,6 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
         func_f -- objective function
         func_g -- constraint function
         opt_err -- value of current optimality error
-        old_point  -- primal variables of previous step
     """
 
     # violation of constraints g
@@ -75,25 +75,40 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
     constr_viol_fs = cs.vertcat(constr_viol_fs, penalty.get_violation(xi_fsinit, ubx, lbx))
     feas_norm = cs.norm_inf(constr_viol)
 
-    if feas_norm > 1.e-1 or opt_err < 1.e-1:
-        print(f"Violation {feas_norm} too large or opt error too small {opt_err}")
+    if feas_norm > 1.e-1:  # or opt_err < 1.e-1:
+        print(f"Violation {feas_norm} too large!")
         return xi_temp
 
-    # objective
-    mu = np.linalg.norm(lam_temp, np.inf)
-    objective = func_f(xi_temp)
-    objective_fs = func_f(xi_fsinit)
+    replace = False
 
-    constr_viol_norm = cs.norm_1(constr_viol)
-    merit = float(cs.norm_1(objective) + mu * constr_viol_norm)
-    merit_fs = float(cs.norm_1(objective_fs) + mu * cs.norm_1(constr_viol_fs))
+    # if the optimality error is large, we control the merit improvement
+    if opt_err > 1.e-1:
+        # objective
+        mu = np.linalg.norm(lam_temp, np.inf)
+        objective = func_f(xi_temp)
+        objective_fs = func_f(xi_fsinit)
 
-    if merit_fs > merit:
-        print("Merit does not decrase")
-        return xi_temp
-    else:
+        constr_viol_norm = cs.norm_1(constr_viol)
+        merit = float(cs.norm_1(objective) + mu * constr_viol_norm)
+        merit_fs = float(cs.norm_1(objective_fs) + mu * cs.norm_1(constr_viol_fs))
+
+        if merit_fs < merit:
+            print("Merit improves")
+            replace = True
+
+    # otherwise, we consider the optimality error
+    elif opt_err > 5.e-3 and lag_der is not None and mode == "default":
+        old_opt = get_kkt_error(xi_temp, lam_temp, lag_der)
+        fs_opt = get_kkt_error(xi_fsinit, lam_temp, lag_der)
+        if fs_opt <= old_opt:
+            print("KKT error decreases")
+            replace = True
+
+    if replace:
         print("Replace by FSInit")
         return xi_fsinit
+    else:
+        return xi_temp
 
 
 def refine_lifting(curr_problem, grid, starting_times, s_temp, q_temp, mu=1):

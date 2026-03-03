@@ -75,7 +75,7 @@ class problem(BaseOCClass.super_problem):
         F_start = [F_reg[i].__float__() for i in range(F_reg.numel())]
         z_start = [0.] * self.o_dim
         init["s_start"] = cs.DM(x_start + G_start + F_start + z_start)
-        init["q_start"] = [0.5] * self.q_dim
+        init["q_start"] = [0.5] + [0.25] * self.o_dim
         init["s_dim"] = self.s_dim
         init["q_dim"] = self.q_dim
         return init

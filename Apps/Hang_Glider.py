@@ -53,7 +53,7 @@ class problem(BaseOCClass.super_problem):
     def get_init(self):
         init = {}
         init["s_start"] = cs.DM([self.x0, self.y0, self.vx0, self.vy0])
-        init["q_start"] = [0.7, 1]
+        init["q_start"] = [0.8, 1]
         init["s_dim"] = self.s_dim
         init["q_dim"] = self.q_dim
         return init

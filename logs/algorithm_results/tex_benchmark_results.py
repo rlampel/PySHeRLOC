@@ -38,23 +38,29 @@ if __name__ == "__main__":
 
     excluded = [
         "LQR Mayer",
-        "Ocean Mayer"
+        "Ocean Mayer",
+        "F8 Aircraft Mayer",
+        "Particle Steering Mayer",
+        "Rao Mease Mayer",
+        "Tubular Reactor Mayer"
     ]
 
     ex_files = [
         "baseline_exact.dat",
         "fsinit_exact_iters.dat",
-        "auto_condense_exact_iters.dat"
+        "auto_condense_exact_iters.dat",
+        "comb_exact_iters.dat"
     ]
 
     qn_files = [
         "baseline_quasi.dat",
         "fsinit_quasi_newton_iters.dat",
-        "auto_condense_quasi_newton_iters.dat"
+        "auto_condense_quasi_newton_iters.dat",
+        "comb_quasi_newton_iters.dat"
     ]
 
     x_labels = ["exact", "Quasi-Newton"]
-    style_names = ["base", "fs", "cond"]
+    style_names = ["base", "fs", "cond", "comb"]
 
     num_datasets = len(ex_files)
 
@@ -79,7 +85,7 @@ if __name__ == "__main__":
 
             if counter % 25 == 0:
                 output += ",\nlegend columns=-1, % Horizontal legend \n"
-                output += "legend entries={base, cond, fs},\n"
+                output += "legend entries={base, fs, cond, comb},\n"
                 output += "legend style={draw=none, fill=none, font=\\footnotesize,\n"
                 output += "column sep=0.5cm,\n"
                 output += "/tikz/every odd column/.append style={column sep=0cm},},\n"

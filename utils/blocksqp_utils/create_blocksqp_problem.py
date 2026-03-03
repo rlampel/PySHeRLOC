@@ -70,7 +70,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     optim_init = input_opts.get("optim_init", False)
     always_auto = input_opts.get("always_auto", False)
     auto_condense = input_opts.get("auto_condense", False)
-    cond_init = input_opts.get("cond_init", False)
     verbose = input_opts.get("verbose", True)
     plot_iter = input_opts.get("plot_iter", True)
     log_results = input_opts.get("log_results", True)
@@ -192,13 +191,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             num_control_points, num_time_points
         )
 
-    if exact_hess and cond_init:
-        # update initialization to get a better condition number of the Hessian blocks
-        block_conds = hess_block_cond.get_block_cond(start_point, problem.lam_start[problem.nVar:],
-                                                     lag_hess, sparsity_pattern)
-        start_point = hess_block_cond.get_better_cond_init(start_point, s_dim,
-                                                           block_conds, sparsity_pattern)
-
     problem.x_start = start_point
 
     # determine optimal Lagrange multipliers for exact hessian
@@ -219,7 +211,8 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         def step_modifier(xi_temp, lam_temp):
             xi_temp[:] = fsinit_merit(
                 xi_temp, fsinit(xi_temp), problem.lam_start, lbg, ubg, lbx, ubx, func_f, func_g,
-                old_point=start_point, exact_hess=exact_hess
+                exact_hess=exact_hess, lag_der=full_lag_der,
+                mode=condense_mode
             )
             return 0
         problem.set_stepModification(step_modifier)
@@ -294,12 +287,14 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                 old_point, old_lambd
             )
 
+            '''
             # compute kappa values of Hessian approximation
             log = log_conv_data.add_kappa(
                 log, xi_temp, old_point, np.array(lam_temp).reshape(-1, 1),
                 meth.vars, lag_hess, lag_der, problem.jac_g, sparsity_pattern,
                 hess_type=1
             )
+            '''
 
         default_init["sol"] = np.array(sort_back(xi_temp, sort_grid, s_dim, q_dim))
 
@@ -328,7 +323,9 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                 xi_temp[:] = fsinit_merit(
                     xi_temp, fsinit(xi_temp), np.array(lam_temp).reshape(-1, 1),
                     lbg, ubg, lbx, ubx, func_f, func_g,
-                    opt_err=meth.vars.tol, old_point=old_point, exact_hess=exact_hess
+                    opt_err=meth.vars.tol, exact_hess=exact_hess,
+                    lag_der=full_lag_der, mode=condense_mode
+
                 )
                 return 0
             problem.set_stepModification(step_modifier)
@@ -371,7 +368,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             constr_viol = cs.vertcat(g_viol, penalty.get_violation(xi_temp, ubx, lbx))
             # current scaled optimality error
             curr_opt = meth.vars.tol
-            kkt_norm_list += [float(curr_opt)]  # [float(curr_kkt_err)]
+            kkt_norm_list += [float(curr_opt)]
 
             # ensure that there are only small Hessian updates left
             prim_step_norm = float(cs.norm_2(prim_step)**2)
@@ -402,11 +399,11 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                 )
                 hessblock_sizes = get_block_sizes.get_hessblock_sizes(sparsity_pattern)
 
-                print("vblocks: ", vblock_sizes)
-                print("cblock indices : ", cblocks)
-                print("cblocks: ", cblock_sizes)
-                print("sparsity: ", sparsity_pattern)
-                print("hessblocks: ", hessblock_sizes)
+                # print("vblocks: ", vblock_sizes)
+                # print("cblock indices : ", cblocks)
+                # print("cblocks: ", cblock_sizes)
+                # print("sparsity: ", sparsity_pattern)
+                # print("hessblocks: ", hessblock_sizes)
 
                 from . import create_condenser
                 if exact_hess:
@@ -420,7 +417,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
 
                 condensed_bfgs = None
 
-                print("START OVER WITH SMALLER QP")
+                print("#" * 30 + "\nSTART OVER WITH SMALLER QP\n" + "#" * 30)
                 num_lift_points = sum(grid["lift"][1:])
                 grid["lift"] = [0] * num_time_points
                 xi_temp_sort = sort_back(xi_temp, sort_grid, s_dim, q_dim)

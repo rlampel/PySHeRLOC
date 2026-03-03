@@ -41,9 +41,8 @@ class problem(BaseOCClass.super_problem):
         return max_t
 
     def start_bounds(self, start):
-        lbs = [0.5, 1.5, 0.]
-        ubs = [0.5, 1.5, 0.]
-        return start, ubs, lbs
+        bs = [0.5, 1.5, 0.]
+        return start, bs, bs
 
     def control_bounds(self, control):
         lbu = [0]
