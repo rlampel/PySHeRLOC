@@ -7,7 +7,9 @@ import os
 import timeit
 import argparse
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description="Defines the problem name and algorithmic settings."
+)
 parser.add_argument('-n', "--problem_name", default="Bioreactor",
                     help="Name of the problem to be solved.")
 parser.add_argument('-hess', "--exact_hessian", default=False,
@@ -59,8 +61,10 @@ time_file = os.path.join(
     "logs/algorithm_results/" + output_name + "_times.log"
 )
 
-
-curr_problem = get_problem.get_problem(problem_name)
+if mode == "OED":
+    curr_problem = get_problem.get_oed_problem(problem_name)
+else:
+    curr_problem = get_problem.get_problem(problem_name)
 
 curr_init_type = init_type
 ode = curr_problem.get_ode()
