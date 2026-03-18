@@ -111,14 +111,7 @@ def trigger_auto_condensing(grid, sort_grid, num_control_points,
     if not (1 in grid["lift"][1:]):
         return False
 
-    # check whether the current point is close to the solution
-    # print("Check the norms:\n\tviol: ", constr_viol_norm,
-    #       "\n\tstep: ", step_norm,
-    #       "\n\trel. step: ", rel_step_norm)
-    if mode == "OED_transformed":
-        opt_cond = (curr_opt > 5.e-3)
-    else:
-        opt_cond = (curr_opt > 5.e-3)
+    opt_cond = (curr_opt > 5.e-3)
 
     viol_cond = (constr_viol_norm > 1.e-3)
     step_cond = (step_norm > 1.e-3)

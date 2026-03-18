@@ -3,11 +3,12 @@ import numpy as np
 import timeit
 import matplotlib.pyplot as plt
 from .. import create_nlp, adapt_init, penalty
-from . import get_blocksqp_path, hess_block_cond
+from . import get_blocksqp_path
 from . import log_conv_data
 from . import blocksqp_options, get_block_sizes
 from .sort_vars import sort_back, sort_vars_by_time
-from .blocksqp_init_heuristics import fsinit_heuristic, fsinit_merit, refine_lifting
+from .blocksqp_init_heuristics import fsinit_merit
+from .blocksqp_init_heuristics import refine_lifting, fsinit_heur_new
 from .auto_condensing_heuristic import trigger_auto_condensing
 import os
 import time
@@ -15,9 +16,9 @@ from Tkinter_plots import plot_gui
 # Path to BlockSQP installation
 blockSQP_path = str(get_blocksqp_path.get_path())
 os.sys.path.append(blockSQP_path)
-import py_blockSQP as blockSQP
+import blockSQP2 as blockSQP
 # from blockSQP_pyProblem import blockSQP_pyProblem as Problemspec
-from py_blockSQP import Problemspec
+from blockSQP2 import Problemspec
 
 # global variable to plot lifting points
 plot_lift = []
@@ -108,7 +109,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     lift_grid = grid.copy()
     lift_grid["time"] = starting_times
 
-    # better init
+    # separate the supplied point into control and state variables
     num_control_points = len(grid["control"])
     q_temp = start_point[:q_dim * num_control_points]
     s_temp = start_point[q_dim * num_control_points:]
@@ -116,7 +117,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     s_init = s_temp
     xi_temp = np.array(cs.vertcat(q_temp, s_init))
 
-    ################
+    # sort the variables and obtain the sparsity pattern
     start_point = cs.vertcat(q_temp, s_init)
     start_point, sparsity_pattern, sort_grid = sort_vars_by_time(start_point, grid, s_dim, q_dim)
 
@@ -173,7 +174,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         lam_opt = adapt_init.get_best_lam(start_point, lbx, ubx,
                                           func_g, lbg, ubg,
                                           problem.grad_f(start_point), jac_g_start)
-        # print("BESTE MULTIPLIZIERER: ", lam_opt)
         print("L1 Norm: ", cs.norm_inf(lam_opt))
         problem.lam_start = lam_opt
     elif lam_init is not None:
@@ -204,13 +204,14 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
 
     if always_auto:
         def fsinit(xi_temp):
-            return fsinit_heuristic(
-                xi_temp, sort_grid, grid, ode, s_dim, q_dim, num_control_points, num_time_points
+            return fsinit_heur_new(
+                xi_temp, sort_grid, grid, curr_problem
             )
 
-        def step_modifier(xi_temp, lam_temp):
+        def step_modifier(xi_temp, lam_temp_in):
             xi_temp[:] = fsinit_merit(
-                xi_temp, fsinit(xi_temp), problem.lam_start, lbg, ubg, lbx, ubx, func_f, func_g,
+                xi_temp, fsinit, problem.lam_start, lbg, ubg, lbx, ubx, func_f, func_g,
+                lam_new=lam_temp_in,
                 exact_hess=exact_hess, lag_der=full_lag_der,
                 mode=condense_mode
             )
@@ -260,7 +261,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     kkt_norm_list = []
 
     while ret == 0 and i < max_iter:
-        ret = int(meth.run(1, 1))  # second argument: 0 restart, 1 keeps previous approximation
+        ret = int(meth.run(1, 1).value)  # second argument: 0 restart, 1 keeps previous approximation
         i += 1
         xi_temp = np.array(meth.get_xi()).reshape(-1)
         lam_temp = meth.get_lambda()
@@ -321,8 +322,9 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             # update the old point
             def step_modifier(xi_temp, lam_temp_in):
                 xi_temp[:] = fsinit_merit(
-                    xi_temp, fsinit(xi_temp), np.array(lam_temp).reshape(-1, 1),
+                    xi_temp, fsinit, np.array(lam_temp).reshape(-1, 1),
                     lbg, ubg, lbx, ubx, func_f, func_g,
+                    lam_new=lam_temp_in,
                     opt_err=meth.vars.tol, exact_hess=exact_hess,
                     lag_der=full_lag_der, mode=condense_mode
 
@@ -398,12 +400,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                     s_dim, g, cblocks, cblock_match
                 )
                 hessblock_sizes = get_block_sizes.get_hessblock_sizes(sparsity_pattern)
-
-                # print("vblocks: ", vblock_sizes)
-                # print("cblock indices : ", cblocks)
-                # print("cblocks: ", cblock_sizes)
-                # print("sparsity: ", sparsity_pattern)
-                # print("hessblocks: ", hessblock_sizes)
 
                 from . import create_condenser
                 if exact_hess:

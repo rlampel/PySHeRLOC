@@ -4,9 +4,9 @@ from . import get_blocksqp_path
 # Path to BlockSQP installation
 blockSQP_path = str(get_blocksqp_path.get_path())
 os.sys.path.append(blockSQP_path)
-import py_blockSQP as blockSQP
+import blockSQP2 as blockSQP
 # from blockSQP_pyProblem import blockSQP_pyProblem as Problemspec
-from py_blockSQP import Problemspec
+from blockSQP2 import Problemspec
 
 
 def condense_hessian(

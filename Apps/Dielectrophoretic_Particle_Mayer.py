@@ -42,7 +42,7 @@ class problem(BaseOCClass.super_problem):
         return init
 
     def get_grid_details(self):
-        max_t = 5
+        max_t = 10
         return max_t
 
     def start_bounds(self, start):
@@ -50,7 +50,7 @@ class problem(BaseOCClass.super_problem):
         return start, bs, bs
 
     def control_bounds(self, control):
-        lbu = [-1., 0.]
+        lbu = [-1., 1.e-3]
         ubu = [1., cs.inf]
         return control, ubu, lbu
 

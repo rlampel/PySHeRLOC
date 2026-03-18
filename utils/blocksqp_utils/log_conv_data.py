@@ -1,8 +1,13 @@
 from .. import penalty
-from . import hess_block_cond
 import casadi as cs
 import numpy as np
 from tabulate import tabulate
+import os
+from . import get_blocksqp_path
+# Path to BlockSQP installation
+blockSQP_path = get_blocksqp_path.get_path()
+os.sys.path.append(blockSQP_path)
+import blockSQP2 as blockSQP
 
 
 def init_logs():
@@ -47,8 +52,6 @@ def add_log_entry(log, prim_vars, dual_vars,
     kkt_func = cs.vertcat(kkt_func, constr_viol)
     rhs_res = kkt_func.T @ kkt_func
     rhs_res = cs.norm_inf(kkt_func) / (1 + cs.norm_inf(dual_vars))
-    # rhs_res = cs.norm_2(full_lag_der(prim_vars, dual_vars))**2
-    # rhs_res += constr_viol.T @ constr_viol
     mu = np.linalg.norm(dual_vars, np.inf)
 
     # if there are old steps available, monitor the step sizes
@@ -68,6 +71,33 @@ def add_log_entry(log, prim_vars, dual_vars,
     return log
 
 
+def get_kappa(vars, lag_hess, lag_der, jac_g, x, lambd, x_old, sparsity_pattern, hess_type=1):
+    '''Criterion taken from Numerical Optimization by Nocedal, equation (18.63).'''
+    dx = x - x_old
+    x_dim = x.shape[0]
+    hess_eval = np.array(lag_hess(x, lambd[x_dim:]).full(), dtype=np.float64)
+    # iterate over all hessian blocks
+    for i in range(len(sparsity_pattern) - 1):
+        if hess_type == 1:
+            # compute kappa for sr1 matrix
+            hess_approx_block = vars.get_hess1_block(i)
+        else:
+            # compute kappa for BFGS matrix
+            hess_approx_block = vars.get_hess2_block(i)
+        hess_approx_block = np.array(blockSQP.Matrix(hess_approx_block))
+        hess_eval[sparsity_pattern[i]:sparsity_pattern[i + 1],
+                  sparsity_pattern[i]:sparsity_pattern[i + 1]] -= hess_approx_block
+
+    grad_bounds = cs.DM_eye(x_dim)
+    grad_comb = cs.horzcat(grad_bounds, jac_g(x_old).T)
+    A = np.array(grad_comb)
+    P = np.eye(x_dim) - A @ cs.inv(A.T @ A) @ A.T
+    kappa = cs.norm_2(P @ (hess_eval) @ dx) / cs.norm_2(dx)
+    print("computed kappa: ", kappa)
+
+    return float(kappa)
+
+
 def add_kappa(log, prim_vars, old_prim_vars, dual_vars, meth_vars,
               lag_hess, lag_der, jac_g, sparsity_pattern, hess_type=2):
     """Compute the current kappa value and add it to the log dictionary.
@@ -84,7 +114,7 @@ def add_kappa(log, prim_vars, old_prim_vars, dual_vars, meth_vars,
         sparsity_pattern  -- indices of the individual blocks for the vector of primal variables
         hess_type  -- indicates whether to compute kappa for the SR1 (1) or BFGS (2) matrix
     """
-    curr_kappa = hess_block_cond.get_kappa(
+    curr_kappa = get_kappa(
         meth_vars, lag_hess, lag_der, jac_g,
         prim_vars, dual_vars,
         old_prim_vars,
@@ -129,7 +159,7 @@ def print_logs(log):
         log  -- dictionary to store the quantities in
     """
     table_data = []
-    headers = ["kappa"]
+    headers = ["conv", "step"]
     table_data += [["iter"] + headers]
 
     entry_sizes = [len(log[key]) for key in headers]

@@ -4,6 +4,7 @@ from .. import initialization, penalty
 from .sort_vars import sort_back, sort_vars_by_time
 from . import dyn_lifting
 from . import fast_init_lift
+from . import fsinit_eval
 
 
 def get_kkt_error(prim_vars, dual_vars, lag_der):
@@ -39,6 +40,7 @@ def fsinit_heuristic(xi_temp, sort_grid, grid, ode, s_dim, q_dim,
 
     temp_grid = grid.copy()
     temp_grid["lift"] = [1] + [0] * (num_time_points - 1)
+
     s_plot = initialization.compute_all_states({"sol": cs.vertcat(q_temp, s_temp),
                                                 "s_dim": s_dim,
                                                 "q_dim": q_dim},
@@ -50,7 +52,35 @@ def fsinit_heuristic(xi_temp, sort_grid, grid, ode, s_dim, q_dim,
     return xi_temp.reshape(-1)
 
 
-def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
+def fsinit_heur_new(xi_temp, sort_grid, grid, curr_problem):
+    """Compute all states using FSInit based on the state at time 0.
+
+    Keyword arguments:
+        xi_temp  -- primary variables
+        sorting_grid -- positions of shooting variables obtained by sorting
+        grid    -- dict containing discretization and lifting points
+        num_control_points -- number of control discretizations
+    """
+    # fsinit
+    num_control_points = len(grid["control"])
+    init = curr_problem.get_init()
+    s_dim = init["s_dim"]
+    q_dim = init["q_dim"]
+
+    # sort back
+    xi_temp = np.array(sort_back(xi_temp, sort_grid, s_dim, q_dim))
+
+    q_temp = xi_temp[:q_dim * num_control_points]
+    s_temp = xi_temp[q_dim * num_control_points:q_dim * num_control_points + s_dim]
+
+    xi_temp, g, J = fsinit_eval.fsinit_nlp(curr_problem, grid, s_temp, q_temp)
+
+    xi_temp = np.array(sort_vars_by_time(xi_temp, grid, s_dim, q_dim)[0])
+    return xi_temp.reshape(-1), g, J
+
+
+def fsinit_merit(xi_temp, fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
+                 lam_new,
                  opt_err=1., old_point=None, exact_hess=True, lag_der=None,
                  mode="default"):
     """Replace the current states by FSInit if merit and KKT do not get too much worse.
@@ -66,27 +96,27 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
         opt_err -- value of current optimality error
     """
 
-    # violation of constraints g
+    # violation for the current iterate
     constr_viol = penalty.get_violation(func_g(xi_temp), ubg, lbg)
-    constr_viol_fs = penalty.get_violation(func_g(xi_fsinit), ubg, lbg)
-
-    # violation of variable bounds
     constr_viol = cs.vertcat(constr_viol, penalty.get_violation(xi_temp, ubx, lbx))
-    constr_viol_fs = cs.vertcat(constr_viol_fs, penalty.get_violation(xi_fsinit, ubx, lbx))
+
     feas_norm = cs.norm_inf(constr_viol)
 
-    if feas_norm > 1.e-1:  # or opt_err < 1.e-1:
-        print(f"Violation {feas_norm} too large!")
+    if feas_norm > 1.e-1 or opt_err <= 5.e-3:
+        print(f"Violation {feas_norm} too large or {opt_err} too small!")
         return xi_temp
 
+    # violation for the FSInit adaptation
+    xi_fsinit, g_fsinit, objective_fs = fsinit(xi_temp)
+    constr_viol_fs = penalty.get_violation(g_fsinit, ubg, lbg)
+    constr_viol_fs = cs.vertcat(constr_viol_fs, penalty.get_violation(xi_fsinit, ubx, lbx))
     replace = False
 
-    # if the optimality error is large, we control the merit improvement
+    # if the last optimality error was large, we control the merit improvement
     if opt_err > 1.e-1:
         # objective
         mu = np.linalg.norm(lam_temp, np.inf)
         objective = func_f(xi_temp)
-        objective_fs = func_f(xi_fsinit)
 
         constr_viol_norm = cs.norm_1(constr_viol)
         merit = float(cs.norm_1(objective) + mu * constr_viol_norm)
@@ -98,8 +128,8 @@ def fsinit_merit(xi_temp, xi_fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_
 
     # otherwise, we consider the optimality error
     elif opt_err > 5.e-3 and lag_der is not None and mode == "default":
-        old_opt = get_kkt_error(xi_temp, lam_temp, lag_der)
-        fs_opt = get_kkt_error(xi_fsinit, lam_temp, lag_der)
+        old_opt = get_kkt_error(xi_temp, lam_new, lag_der)
+        fs_opt = get_kkt_error(xi_fsinit, lam_new, lag_der)
         if fs_opt <= old_opt:
             print("KKT error decreases")
             replace = True

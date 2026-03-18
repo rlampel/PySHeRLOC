@@ -90,7 +90,6 @@ class OCGUI(GUIBaseClass.GUI):
         self.increase_penalty = tk.BooleanVar()
         self.l1_refinement = tk.BooleanVar()
         self.exact_hessian = tk.BooleanVar()
-        self.cond_init = tk.BooleanVar()
         self.optimize_lamb = tk.BooleanVar()
         self.log_results = tk.BooleanVar()
         self.always_auto = tk.BooleanVar()
@@ -111,7 +110,6 @@ class OCGUI(GUIBaseClass.GUI):
         self.penalty_solver.set(False)
         self.l1_refinement.set(False)
         self.exact_hessian.set(False)
-        self.cond_init.set(False)
         self.optimize_lamb.set(False)
         self.log_results.set(False)
         self.always_auto.set(False)
@@ -159,7 +157,7 @@ class OCGUI(GUIBaseClass.GUI):
                                                                     padx=5, pady=5)
         row_counter += 1
         lift_scale = tk.Scale(master=self.left_frame, variable=self.num_lifting_points,
-                              from_=1, to=100,
+                              from_=0, to=100,
                               orient="horizontal")
         lift_scale.grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
         lift_scale.set(self.num_lifting_points.get())
@@ -182,16 +180,6 @@ class OCGUI(GUIBaseClass.GUI):
         drop.grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
         row_counter += 1
 
-        # Select penalty parameter
-        tk.Label(self.left_frame, text="Penalty parameter:").grid(row=row_counter, column=0,
-                                                                  sticky="NSEW", padx=5, pady=5)
-        row_counter += 1
-        penalty_scale = tk.Scale(master=self.left_frame, variable=self.penalty_parameter,
-                                 from_=0, to=10, resolution=0.2, orient="horizontal")
-        penalty_scale.grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
-        penalty_scale.set(self.penalty_parameter.get())
-        row_counter += 1
-
         # Callback with refinement
         tk.Checkbutton(master=self.left_frame,
                        text='refinement callback',
@@ -205,15 +193,6 @@ class OCGUI(GUIBaseClass.GUI):
         tk.Checkbutton(master=self.left_frame,
                        text='exact Hessian',
                        variable=self.exact_hessian,
-                       onvalue=True,
-                       offvalue=False
-                       ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
-        row_counter += 1
-
-        # Improve conditioning
-        tk.Checkbutton(master=self.left_frame,
-                       text='improve Hess. condition',
-                       variable=self.cond_init,
                        onvalue=True,
                        offvalue=False
                        ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
@@ -305,11 +284,9 @@ class OCGUI(GUIBaseClass.GUI):
         num_controls = self.num_control_points.get()
         num_lifts = self.num_lifting_points.get()
         max_t = curr_problem.get_grid_details()
-        # mu = self.penalty_parameter.get()
 
         # create grids
         control_points = [i * max_t / num_controls for i in range(num_controls)]
-        # time_points = [i * max_t / num_lifts for i in range(num_lifts + 1)]
         time_points = [i * max_t / num_controls for i in range(num_controls + 1)]
         grid = {}
         grid["time"] = time_points
@@ -319,7 +296,6 @@ class OCGUI(GUIBaseClass.GUI):
         init_vals = curr_problem.get_init()
         q_start = init_vals["q_start"]
         q_init = cs.DM(q_start * num_controls)
-        # q_init = initialization.random_control(curr_problem, num_controls)
 
         s_dim = init_vals["s_dim"]
         start = init_vals["s_start"]
@@ -347,10 +323,11 @@ class OCGUI(GUIBaseClass.GUI):
                 # lifting_points = [1 for i in range(num_lifts + 1)]
                 lifting_points = [0] * len(time_points)
 
-                lift_interval = num_controls // num_lifts
-                for i in range(num_controls + 1):
-                    if i % lift_interval == 0:
-                        lifting_points[i] = 1
+                if num_lifts != 0:
+                    lift_interval = num_controls // num_lifts
+                    for i in range(num_controls + 1):
+                        if i % lift_interval == 0:
+                            lifting_points[i] = 1
                 print("number of lifting points: ", sum(lifting_points))
             case "adaptive":
                 lifting_points = sensitivity_lifting.refine_lifting(curr_problem, init_vals, grid)
@@ -369,8 +346,6 @@ class OCGUI(GUIBaseClass.GUI):
             case _:
                 lifting_points = [0 for i in range(num_lifts + 1)]
 
-        # print("start dynamic lifting: ")
-
         print("lifting points: ", lifting_points)
         s_init = initialization.select_states(s_init, s_dim, lifting_points)
         init_vals["sol"] = cs.vertcat(q_init, s_init)
@@ -383,10 +358,6 @@ class OCGUI(GUIBaseClass.GUI):
             )
             print("FSInit with points ", info_lift)
             init_vals["sol"] = cs.vertcat(q_init, s_init)
-
-        # if (self.optimize_init.get()):
-        #   best_s_init = adapt_init.optimize(curr_problem, init_vals, grid, mu)
-        #   init_vals["sol"] = cs.vertcat(q_init, best_s_init)
 
         # get labels if available
         s_labels = curr_problem.state_labels
@@ -430,7 +401,6 @@ class OCGUI(GUIBaseClass.GUI):
         q_dim = init_vals["q_dim"]
         q_start = init_vals["q_start"]
         q_init = cs.DM(q_start * num_controls)
-        # q_init = initialization.random_control(curr_problem, num_controls)
 
         start = init_vals["s_start"]
 
@@ -454,13 +424,13 @@ class OCGUI(GUIBaseClass.GUI):
 
         match curr_lifting_type:
             case "all":
-                # lifting_points = [1 for i in range(num_lifts + 1)]
                 lifting_points = [0] * len(time_points)
 
-                lift_interval = num_controls // num_lifts
-                for i in range(num_controls + 1):
-                    if i % lift_interval == 0:
-                        lifting_points[i] = 1
+                if num_lifts != 0:
+                    lift_interval = num_controls // num_lifts
+                    for i in range(num_controls + 1):
+                        if i % lift_interval == 0:
+                            lifting_points[i] = 1
                 print("number of lifting points: ", sum(lifting_points))
             case "adaptive":
                 lifting_points = sensitivity_lifting.refine_lifting(curr_problem, init_vals, grid)
@@ -487,10 +457,6 @@ class OCGUI(GUIBaseClass.GUI):
                 curr_problem, grid, sel_time_points, s_init, q_init
             )
             print("FSInit with points ", lifting_points)
-
-        # old version with quadratic penalty
-        # if (self.optimize_init.get()):
-        #     s_init = adapt_init.optimize(curr_problem, init_vals, grid, mu)
 
         init = cs.vertcat(q_init, s_init)
 
@@ -543,10 +509,8 @@ class OCGUI(GUIBaseClass.GUI):
 
                 opts['ipopt.print_level'] = 5
                 opts['iteration_callback'] = mycallback
-                # opts['ipopt.accept_every_trial_step'] = "yes"
                 if not self.exact_hessian.get():
                     opts['ipopt.hessian_approximation'] = "limited-memory"
-                    # opts['ipopt.limited_memory_max_history'] = 1000
 
                 opts["ipopt.tol"] = 1.e-6
                 opts['ipopt.max_iter'] = 200
@@ -554,8 +518,6 @@ class OCGUI(GUIBaseClass.GUI):
 
                 sol = solver(x0=init, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg)
                 print(solver.stats())
-                # print("solution for x: ", sol["x"])
-                # print("total solution: ", sol)
                 if self.log_results.get():
                     plt.clf()
                     plot_gui.plot_conv(gui_items, [], [],
@@ -573,9 +535,8 @@ class OCGUI(GUIBaseClass.GUI):
                 opts['max_iter'] = 100
                 opts['iteration_callback'] = mycallback
                 opts['print_time'] = 0
-                # opts['hess_lim_mem'] = 1  # full memory approximation
                 opts["opttol"] = 1.e-6
-                # opts["linsol"] = "mumps"
+                # opts['hess_lim_mem'] = 1  # full memory approximation
                 # opts['hess_update'] = 2 # BFGS update
                 solver = cs.nlpsol('solver', 'blocksqp', prob, opts)
 
@@ -597,7 +558,6 @@ class OCGUI(GUIBaseClass.GUI):
                 import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
                 opts = {}
                 opts["exact_hess"] = self.exact_hessian.get()
-                opts["cond_init"] = self.cond_init.get()
                 opts["refinement"] = refine
                 opts["optim_lamb"] = self.optimize_lamb.get()
                 opts["optim_init"] = self.optimize_init.get()

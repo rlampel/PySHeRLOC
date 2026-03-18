@@ -3,7 +3,7 @@ import os
 # Path to BlockSQP installation
 blockSQP_path = str(get_blocksqp_path.get_path())
 os.sys.path.append(blockSQP_path)
-import blockSQP2 as blockSQP
+import py_blockSQP as blockSQP
 
 
 def get_blocksqp_options(exact_hess=False):
@@ -23,10 +23,14 @@ def get_blocksqp_options(exact_hess=False):
 
     # use exact Hessian
     if exact_hess:
-        opts.hess_approx = "exact"  # 0, (2 für exakt)
+        opts.exact_hess = 2  # 0, (2 für exakt)
     else:
-        opts.hess_approx = "SR1"
+        opts.exact_hess = 0
 
+    opts.hess_approx = 1
+    opts.sizing = 2
+    opts.fallback_approx = 2
+    opts.fallback_sizing = 4
     # set to false to enable condensing
     opts.lim_mem = False
     opts.mem_size = 20
