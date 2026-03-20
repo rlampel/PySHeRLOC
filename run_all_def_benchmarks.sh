@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Define the file containing the benchmark names

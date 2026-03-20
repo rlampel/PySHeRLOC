@@ -67,7 +67,7 @@ if mode == "OED":
 else:
     curr_problem = get_problem(problem_name)
 
-# log the required numer of iterations
+# log the required number of iterations
 with open(iter_file, 'a') as f:
     output = "\n" + problem_name + ", "
     f.write(output)

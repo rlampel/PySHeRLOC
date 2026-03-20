@@ -1,7 +1,6 @@
 import casadi as cs
 import numpy as np
 from . import nlp_callback as cb
-# from utils.create_nlp import create_nlp
 import utils.create_nlp as create_nlp
 
 
@@ -37,7 +36,6 @@ def condense_ipopt_nlp(darg, plot_details):
     opts['iteration_callback'] = mycallback
 
     # only works with exact Hessian
-
     opts["ipopt.tol"] = 1.e-6
     opts["ipopt.warm_start_init_point"] = "yes"
     opts['ipopt.max_iter'] = 200

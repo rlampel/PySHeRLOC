@@ -127,6 +127,7 @@ class MyCallback(cs.Callback):
                     darg,
                     self.plot_details
                 )
+                self.iter += stats["iter_count"]
                 success = stats["success"]
                 self.condense_success = success
                 return [1]

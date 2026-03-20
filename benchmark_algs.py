@@ -72,7 +72,7 @@ num_controls = num_control_points
 num_lifts = num_lifting_points
 max_t = curr_problem.get_grid_details()
 
-# log the required numer of iterations
+# log the required number of iterations
 with open(iter_file, 'a') as f:
     output = "\n" + problem_name + ", "
     f.write(output)
@@ -161,7 +161,7 @@ for i in range(num_reps):
 avg_time = sum(curr_time_log) / num_reps
 avg_iters = sum(curr_iter_log) / num_reps
 
-# log the required numer of iterations
+# log the required number of iterations
 with open(iter_file, 'a') as f:
     output = str(avg_iters) + ", "
     f.write(output)
