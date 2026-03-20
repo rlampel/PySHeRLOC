@@ -47,8 +47,9 @@ def condense_ipopt_nlp(darg, plot_details):
                                                   num_control_points, num_lifting_points,
                                                   s_dim, q_dim, len(g))
 
-    return solver(x0=init, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg,
-                  lam_g0=lam_g_cond, lam_x0=lam_x_cond)
+    solver(x0=init, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg,
+           lam_g0=lam_g_cond, lam_x0=lam_x_cond)
+    return solver.stats()
 
 
 def condense_duals_ipopt(lam_x, lam_g, num_controls, num_lifts, x_dim, q_dim, cond_g_shape):

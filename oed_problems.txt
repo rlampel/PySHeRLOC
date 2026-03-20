@@ -1,0 +1,6 @@
+Lotka OED
+Lotka Shared OED
+Dielectr Particle OED
+Jackson OED
+Van der Pol OED
+Three Tank OED

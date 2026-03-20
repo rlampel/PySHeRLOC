@@ -42,11 +42,6 @@ class problem(BaseOCClass.super_problem):
         ubs = [1, 0]
         return start, ubs, lbs
 
-    def state_bounds(self, state):
-        lbs = [-cs.inf, 0]
-        ubs = [cs.inf, cs.inf]
-        return state, ubs, lbs
-
     def end_bounds(self, state):
         lbs = [1.5, 0]
         ubs = [1.5, cs.inf]

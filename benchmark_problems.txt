@@ -14,7 +14,6 @@ Egerstedt
 Egerstedt Mayer
 Electric Car
 Electric Car Mayer
-F8 Aircraft Mayer
 Fuller
 Fuller Mayer
 Hang Glider
@@ -26,17 +25,16 @@ Lotka Shared Mayer
 Lotka Volterra
 Lotka Volterra Mayer
 LQR
-LQR Mayer
 Moon Landing
 Mountain Car Mayer
 Ocean
-Ocean Mayer
-Particle Steering Mayer
 Quadrotor
 Rao Mease
-Rao Mease Mayer
 Three Tank
 Three Tank Mayer
-Tubular Reactor Mayer
 Van der Pol
 Van der Pol Mayer
+Lotka OED
+Dielectr Particle OED
+Jackson OED
+Van der Pol OED

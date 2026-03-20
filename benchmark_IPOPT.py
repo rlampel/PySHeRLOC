@@ -1,10 +1,11 @@
-import numpy as np
 import casadi as cs
+import numpy as np
 import utils.initialization as initialization
-import utils.get_problem as get_problem
-import utils.blocksqp_utils.create_blocksqp_problem as blockSQP2
-import os
+import utils.create_nlp as create_nlp
+import Tkinter_plots.nlp_callback as cb
+from utils.get_problem import get_problem, get_oed_problem
 import timeit
+import os
 import argparse
 
 parser = argparse.ArgumentParser(
@@ -14,8 +15,6 @@ parser.add_argument('-n', "--problem_name", default="Bioreactor",
                     help="Name of the problem to be solved.")
 parser.add_argument('-hess', "--exact_hessian", default="n",
                     help="Indicates whether to use the exact Hessian (y/n).")
-parser.add_argument('-fs', "--always_auto", default="n",
-                    help="Indicates whether to use the FSInit algorithm (y/n).")
 parser.add_argument('-cond', "--auto_condense", default="n",
                     help="Indicates whether to use the automatic condensing algorithm (y/n).")
 
@@ -23,10 +22,12 @@ parser.add_argument('-cond', "--auto_condense", default="n",
 args = parser.parse_args()
 problem_name = args.problem_name
 exact_hessian = ("y" == args.exact_hessian)
-always_auto = ("y" == args.always_auto)
 auto_condense = ("y" == args.auto_condense)
 
-print("hess: ", exact_hessian, "\nfs: ", always_auto, "\ncond: ", auto_condense)
+
+# file where the results will be saved
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname, "logs/ipopt_lists.log")
 
 # get the current mode (used for some algorithms)
 if problem_name[-3:] == "OED":
@@ -35,36 +36,26 @@ else:
     mode = "default"
 
 # general settings
-solvers = ["BlockSQP 2"]
 lifting_type = "all"
 init_type = "auto"
 num_lifting_points = 64
 num_control_points = 64
-max_iter = 300
+max_iter = 200
 num_reps = 5
 
-# set the name of the output file
-output_name = ""
-output_name += "fsinit_" * always_auto
-output_name += "condense_" * auto_condense
-output_name += "exact" * exact_hessian
-output_name += "quasi_newton" * (not exact_hessian)
+# file where the results will be saved
+log_name = "logs/default_multiple_shooting/" + "IPOPT_"
+log_name += exact_hessian * "exact"
+log_name += (not exact_hessian) * "quasi_newton"
+iter_file = os.path.join(dirname, log_name + "_iters.log")
+time_file = os.path.join(dirname, log_name + "_times.log")
 
-# append the currect path to the log file
-dirname = os.path.dirname(__file__)
-iter_file = os.path.join(
-    dirname,
-    "logs/algorithm_results/" + output_name + "_iters.log"
-)
-time_file = os.path.join(
-    dirname,
-    "logs/algorithm_results/" + output_name + "_times.log"
-)
 
 if mode == "OED":
-    curr_problem = get_problem.get_oed_problem(problem_name)
+    curr_problem = get_oed_problem(problem_name)
 else:
-    curr_problem = get_problem.get_problem(problem_name)
+    curr_problem = get_problem(problem_name)
+
 
 curr_init_type = init_type
 ode = curr_problem.get_ode()
@@ -136,24 +127,57 @@ for i in range(num_reps):
 
     init = cs.vertcat(q_init, s_init)
     input_size = init.shape[0]
+    # Input for Newton's method
+    default_init = {}
+    default_init["sol"] = init
+    default_init["s_dim"] = s_dim
+    default_init["q_dim"] = q_dim
 
+    w, lbw, ubw, g, lbg, ubg, J = create_nlp.create_nlp(curr_problem, grid)
+
+    plot_details = {}
+    plot_details["grid"] = grid
+    plot_details["ode"] = ode
+    plot_details["problem"] = curr_problem
+    plot_details["init"] = default_init
+    plot_details["log_results"] = False
+    plot_details["time_scale"] = curr_problem.time_scale_ind
+    plot_details["plot_iter"] = False
+    plot_details["condense"] = auto_condense
+    plot_details['lbg'] = lbg
+    plot_details['ubg'] = ubg
+    plot_details['lbw'] = lbw
+    plot_details['ubw'] = ubw
+
+    mycallback = cb.MyCallback('mycallback', cs.vertcat(*w).shape[0],
+                               cs.vertcat(*g).shape[0], 0, plot_details)
+
+    prob = {'f': J, 'x': cs.vertcat(*w), 'g': cs.vertcat(*g)}
     opts = {}
-    opts["exact_hess"] = exact_hessian
-    opts['plot_iter'] = False
-    opts["always_auto"] = always_auto
-    opts["auto_condense"] = auto_condense
-    opts["max_iter"] = max_iter
+
+    opts['ipopt.print_level'] = 5
+    opts['iteration_callback'] = mycallback
+
+    if not exact_hessian:
+        print("Using approximate Hessian!")
+        opts['ipopt.hessian_approximation'] = "limited-memory"
+
+    opts["ipopt.tol"] = 1.e-6
+    opts['ipopt.max_iter'] = 200
+    solver = cs.nlpsol('solver', 'ipopt', prob, opts)
 
     start_time = timeit.default_timer()
-    num_iter, _, _ = blockSQP2.create_blocksqp_problem(
-        curr_problem, grid, init, [],
-        opts, condense_mode=mode
-    )
+    sol = solver(x0=init, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg)
     diff_time = timeit.default_timer() - start_time
+    stats = solver.stats()
 
-    if num_iter == cs.inf or num_iter >= max_iter:
-        num_iter = cs.inf
-        diff_time = cs.inf
+    success = stats["success"]
+    condense_success = mycallback.condense_success
+
+    if success or condense_success:
+        num_iter = mycallback.iter
+    else:
+        num_iter = float(cs.inf)
 
     curr_time_log += [diff_time]
     curr_iter_log += [num_iter]
@@ -170,4 +194,3 @@ with open(iter_file, 'a') as f:
 with open(time_file, 'a') as f:
     output = str(avg_time) + ", "
     f.write(output)
-

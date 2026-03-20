@@ -201,7 +201,7 @@ for num_part_lifts in range(0, 7):
     avg_time = sum(curr_time_log) / num_reps
     avg_iters = sum(curr_iter_log) / num_reps
 
-    # log the required numer of iterations
+    # log the required number of iterations
     with open(iter_file, 'a') as f:
         output = str(avg_iters) + ", "
         f.write(output)

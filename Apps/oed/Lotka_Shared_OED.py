@@ -1,56 +1,44 @@
 import casadi as cs
-from .. import BaseOCClass
 from . import oed_utils
+from .. import BaseOCClass
 
 
 class problem(BaseOCClass.super_problem):
-    x_dim = 3
-    q_dim = 6
+    q_dim = 4
     p_dim = 3
     o_dim = 3
+    x_dim = 3
     s_dim = x_dim + p_dim * x_dim + p_dim * (p_dim + 1) // 2 + o_dim
-    is_inverse = False
+    is_inverse = False  # the Fisher Matrix is given by an ode
     reg_init = 1.e-1
 
     def __init__(self, criterion="A"):
         BaseOCClass.super_problem.__init__(self, self.s_dim, self.q_dim)
         self.criterion = criterion
-        self.state_labels = [r"$x_{" + str(i) + "}$" for i in range(self.x_dim)]
-        self.state_labels += [r"$G_{" + str(i) + "," + str(j) + "}$"
-                              for i in range(1, self.p_dim + 1)
-                              for j in range(1, self.x_dim + 1)]
-        for j in range(1, self.p_dim + 1):
-            self.state_labels += [r"$F_{" + str(i) + "," + str(j) + "}$"
-                                  for i in range(1, j + 1)]
-        self.state_labels += [r"$z_{" + str(i) + "}$" for i in range(self.o_dim)]
-        self.control_labels = [r"$u_{" + str(i) + "}$" for i in range(3)]
-        self.control_labels += [r"$w_{" + str(i) + "}$" for i in range(self.o_dim)]
 
     def get_ode(self):
+        # given constants
+        c1, c2 = 0.1, 0.4
+
         # Declare model variables
         x = cs.MX.sym('x', self.x_dim)
-        x1, x2, x3 = cs.vertsplit(x)
-        p = cs.MX.sym('p', self.p_dim)
-        p_fix = cs.DM([1., 2., 0.8])
+        x0, x1, x2 = cs.vertsplit(x)
+        p = cs.MX.sym('p', self.p_dim)  # interested in p2 and p4
+        p_fix = cs.DM([1., 1., 1.2])
         G = cs.MX.sym('G', self.p_dim * self.x_dim)
         F = cs.MX.sym('F', self.p_dim * (self.p_dim + 1) // 2)
         z = cs.MX.sym('z', self.o_dim)
-        u = cs.MX.sym('u', 3)
+        u = cs.MX.sym('u', 1)
         w = cs.MX.sym('w', self.o_dim)
 
         # Model equations
-        c1, c2, c3 = p[0], p[1], p[2]
-
-        x_dot_p = cs.vertcat(
-            -cs.sqrt(x[0]) + c1 * u[0] + c2 * u[1] - u[2] * cs.sqrt(c3 * x[0]),
-            cs.sqrt(x[0]) - cs.sqrt(x[1]),
-            cs.sqrt(x[1]) - cs.sqrt(x[2]) + u[2] * cs.sqrt(c3 * x[0])
-        )
+        x_dot = cs.vertcat(x0 - p[0] * x0 * x1 - x0 * x2,
+                           -x1 + p[1] * x0 * x1 - c1 * x1 * u,
+                           -x2 + p[2] * x0 * x2 - c2 * x2 * u)
 
         # f equations
-        f = cs.Function('f', [x, p, u], [x_dot_p])
+        f = cs.Function('f', [x, p, u], [x_dot])
         h = cs.Function('h', [x], [x])
-        x_dot = f(x, p_fix, u)
         G_dot = oed_utils.get_sens_der(G, f, x, p, p_fix, u)
         F_dot = oed_utils.get_fisher_info(G, h, x, p, p_fix, w)
 
@@ -59,7 +47,7 @@ class problem(BaseOCClass.super_problem):
 
         control = cs.vertcat(u, w)
         s = cs.vertcat(x, G, F, z)
-        s_dot = cs.vertcat(x_dot,
+        s_dot = cs.vertcat(f(x, p_fix, u),
                            G_dot,
                            F_dot,
                            z_dot)
@@ -70,48 +58,42 @@ class problem(BaseOCClass.super_problem):
 
     def get_init(self):
         init = {}
-        x_start = [2., 2., 2.]
-        G_start = [0.] * self.p_dim * self.x_dim
-        F_reg = oed_utils.lower_triangular_to_vector(
+        x_start = cs.DM([1.5, 0.5, 1.])
+        G_start = cs.DM([0.] * self.p_dim * self.x_dim)
+        F_start = oed_utils.lower_triangular_to_vector(
             cs.tril(cs.DM_eye(self.p_dim) * self.reg_init)
         )
-        F_start = [F_reg[i].__float__() for i in range(F_reg.numel())]
-        z_start = [0.] * self.o_dim
-        init["s_start"] = cs.DM(x_start + G_start + F_start + z_start)
-        init["q_start"] = [0.5] * self.q_dim
+        z_start = cs.DM([0.] * self.o_dim)
+        init["s_start"] = cs.vertcat(x_start, G_start, F_start, z_start)
+        init["q_start"] = [0.2] * self.q_dim
         init["s_dim"] = self.s_dim
         init["q_dim"] = self.q_dim
         return init
 
     def get_grid_details(self):
-        max_t = 12
+        max_t = 20
         return max_t
 
     def start_bounds(self, start):
-        x_start = [2., 2., 2.]
-        G_start = [0.] * self.p_dim * self.x_dim
+        G_b = [0.] * self.p_dim * self.x_dim
         F_reg = oed_utils.lower_triangular_to_vector(
             cs.tril(cs.DM_eye(self.p_dim) * self.reg_init)
         )
         F_b = [F_reg[i].__float__() for i in range(F_reg.numel())]
-        z_start = [0.] * self.o_dim
-        bs = x_start + G_start + F_b + z_start
-        return start, bs, bs
+        z_b = [0.] * self.o_dim
+
+        lbs = [1.5, 0.5, 1.] + G_b + F_b + z_b
+        ubs = [1.5, 0.5, 1.] + G_b + F_b + z_b
+        return start, ubs, lbs
 
     def control_bounds(self, control):
-        lbu = [0.] * self.q_dim
-        ubu = [1.] * self.q_dim
+        lbu = [0] * self.q_dim
+        ubu = [1] * self.q_dim
         return control, ubu, lbu
 
-    def control_cond(self, control):
-        control_sum = control[0] + control[1] + control[2]
-        lbu = [1]
-        ubu = [1]
-        return control_sum, ubu, lbu
-
     def end_bounds(self, state):
-        end_points = state[-self.o_dim:]
-        ubs = [2.] * self.o_dim
+        end_points = cs.vertcat(state[-1], state[-2], state[-3])
+        ubs = [4] * self.o_dim
         lbs = [0] * self.o_dim
         return end_points, ubs, lbs
 

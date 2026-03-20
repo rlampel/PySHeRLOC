@@ -1,8 +1,8 @@
 import numpy as np
 import casadi as cs
 import utils.initialization as initialization
-import utils.create_nlp as create_nlp
 import utils.get_problem as get_problem
+import utils.blocksqp_utils.create_blocksqp_problem as blockSQP2
 import os
 import timeit
 
@@ -48,17 +48,16 @@ log_results = False
 always_auto = True
 auto_condense = True
 
-
 # triples of (exact_hessian, always_auto, auto_condense)
 presets = [
-    # [False, False, False],
+    [False, False, False],
     # [False, False, True],
     # [False, True, False],
     # [False, True, True],
-    [True, False, False],
-    [True, False, True],
-    [True, True, False],
-    [True, True, True]
+    # [True, False, False],
+    # [True, False, True],
+    # [True, True, False],
+    # [True, True, True]
 ]
 
 for setting in presets:
@@ -84,7 +83,7 @@ for setting in presets:
         "logs/algorithm_results/" + output_name + "_times.log"
     )
 
-    for mode in ["default", "OED"]:
+    for mode in ["default"]:
 
         if mode == "OED":
             problem_names = oed_problems
@@ -106,6 +105,7 @@ for setting in presets:
             num_lifts = num_lifting_points
             max_t = curr_problem.get_grid_details()
 
+            '''
             # log the required numer of iterations
             with open(iter_file, 'a') as f:
                 output = "\n" + problem_name + ", "
@@ -115,6 +115,7 @@ for setting in presets:
             with open(time_file, 'a') as f:
                 output = "\n" + problem_name + ", "
                 f.write(output)
+            '''
 
             # log average time and iterations for current lifting
             curr_time_log = []
@@ -171,14 +172,11 @@ for setting in presets:
                 init = cs.vertcat(q_init, s_init)
                 input_size = init.shape[0]
 
-                w, lbw, ubw, g, lbg, ubg, J = create_nlp.create_nlp(curr_problem, grid)
-
                 refine = l1_refinement
                 if refine:
                     refine = 5
                 else:
                     refine = -1
-                import utils.blocksqp_utils.create_blocksqp_problem as blockSQP2
                 opts = {}
                 opts["exact_hess"] = exact_hessian
                 opts['plot_iter'] = False
@@ -191,7 +189,7 @@ for setting in presets:
                 opts["max_iter"] = max_iter
 
                 start_time = timeit.default_timer()
-                num_iter, _, _ = blockSQP2.create_blocksqp_problem(
+                num_iter, _ = blockSQP2.create_blocksqp_problem(
                     curr_problem, grid, init, [],
                     opts, condense_mode=mode
                 )
@@ -207,6 +205,12 @@ for setting in presets:
             avg_time = sum(curr_time_log) / num_reps
             avg_iters = sum(curr_iter_log) / num_reps
 
+            import gc
+            # ... at the end of your loop outside this function
+            del curr_problem, s_init, init_vals
+            gc.collect()
+
+            '''
             # log the required numer of iterations
             with open(iter_file, 'a') as f:
                 output = str(avg_iters) + ", "
@@ -216,4 +220,5 @@ for setting in presets:
             with open(time_file, 'a') as f:
                 output = str(avg_time) + ", "
                 f.write(output)
+            '''
 

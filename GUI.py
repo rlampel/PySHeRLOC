@@ -482,6 +482,8 @@ class OCGUI(GUIBaseClass.GUI):
 
         plot_details["lbg"] = lbg
         plot_details["ubg"] = ubg
+        plot_details["lbx"] = lbw
+        plot_details["ubx"] = ubw
 
         match curr_solver:
             case "fatrop":
@@ -557,6 +559,7 @@ class OCGUI(GUIBaseClass.GUI):
                     refine = -1
                 import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
                 opts = {}
+                opts["plot_iter"] = True
                 opts["exact_hess"] = self.exact_hessian.get()
                 opts["refinement"] = refine
                 opts["optim_lamb"] = self.optimize_lamb.get()

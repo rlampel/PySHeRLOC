@@ -37,28 +37,35 @@ if __name__ == "__main__":
     output_file = os.path.join(dirname, "tex_output.txt")
 
     excluded = [
+        "Catalyst Mixing",
         "LQR Mayer",
         "Ocean Mayer",
         "F8 Aircraft Mayer",
         "Particle Steering Mayer",
         "Rao Mease Mayer",
-        "Tubular Reactor Mayer"
+        "Tubular Reactor Mayer",
+        "Three Tank OED"
     ]
 
     ex_files = [
-        "baseline_exact.dat",
-        "fsinit_exact_iters.dat",
-        "auto_condense_exact_iters.dat",
-        "comb_exact_iters.dat"
+        "exact_iters.log",
+        "fsinit_exact_iters.log",
+        "condense_exact_iters.log",
+        "fsinit_condense_exact_iters.log"
     ]
 
     qn_files = [
-        "baseline_quasi.dat",
-        "fsinit_quasi_newton_iters.dat",
-        "auto_condense_quasi_newton_iters.dat",
-        "comb_quasi_newton_iters.dat"
+        "quasi_newton_iters.log",
+        "fsinit_quasi_newton_iters.log",
+        "condense_quasi_newton_iters.log",
+        "fsinit_condense_quasi_newton_iters.log"
     ]
 
+    # use real time instead
+    ex_files = [el[:-9] + "times.log" for el in ex_files]
+    qn_files = [el[:-9] + "times.log" for el in qn_files]
+
+    print(ex_files)
     x_labels = ["exact", "Quasi-Newton"]
     style_names = ["base", "fs", "cond", "comb"]
 
@@ -71,6 +78,12 @@ if __name__ == "__main__":
 
     output = ""
     counter = 0
+    default_iters_ex = 0
+    best_iters_ex = 0
+    default_iters = 0
+    best_scale_ex = 0
+    best_scale = 0
+    best_iters = 0
     for i in range(len(problem_names)):
         curr_name = problem_names[i]
 
@@ -83,7 +96,7 @@ if __name__ == "__main__":
             if counter % 5 == 0:
                 output += ", ylabel={Rel. Iterations}"
 
-            if counter % 25 == 0:
+            if counter == 0:
                 output += ",\nlegend columns=-1, % Horizontal legend \n"
                 output += "legend entries={base, fs, cond, comb},\n"
                 output += "legend style={draw=none, fill=none, font=\\footnotesize,\n"
@@ -100,6 +113,17 @@ if __name__ == "__main__":
                 curr_ex_data = ex_data[curr_name]
                 curr_qn_data = qn_data[curr_name]
 
+                if m == 0:
+                    default_iters_ex += curr_ex_data[0]
+                    default_iters += curr_qn_data[0]
+                    default_iters_div_ex = curr_ex_data[0]
+                    default_iters_div = curr_qn_data[0]
+                elif m == len(ex_datasets) - 1:
+                    best_iters_ex += curr_ex_data[0]
+                    best_iters += curr_qn_data[0]
+                    best_scale_ex += curr_ex_data[0] / default_iters_div_ex
+                    best_scale += curr_qn_data[0] / default_iters_div
+
                 output += "\t\\addplot[" + style_names[m] + "] coordinates {"
 
                 # output only 3 decimal places of precision
@@ -110,5 +134,8 @@ if __name__ == "__main__":
             output += "\n"
             counter += 1
 
-    with open(output_file, 'a') as f:
-        f.write(output)
+    # with open(output_file, 'a') as f:
+    #     f.write(output)
+
+    print(f"total iters: {default_iters, default_iters_ex}, best iters: {best_iters, best_iters_ex}")
+    print(f"Avg. improvement: {best_scale_ex / 40, best_scale / 40}")

@@ -7,9 +7,9 @@ column sep=0.5cm,
 /tikz/every odd column/.append style={column sep=0cm},},
 legend to name=CommonLegendAlg1]
 	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
-	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
+	\addplot[fs] coordinates {(exact, 3.000)(Quasi-Newton, 3.000)};
 	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
-	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
+	\addplot[comb] coordinates {(exact, 3.000)(Quasi-Newton, 3.000)};
 
 %---2 Bioreactor Mayer---
 \nextgroupplot[title={Bioreactor Mayer}]
@@ -20,273 +20,267 @@ legend to name=CommonLegendAlg1]
 
 %---3 Bryson Denham---
 \nextgroupplot[title={Bryson Denham}]
-	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
-	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
-	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
-	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 4.000)};
+	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 4.200)};
+	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 4.200)};
+	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 4.200)};
+	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 4.200)};
 
 %---4 Bryson Denham Mayer---
 \nextgroupplot[title={Bryson Denham Mayer}]
-	\addplot[base] coordinates {(exact, 9.000)(Quasi-Newton, 10.000)};
-	\addplot[fs] coordinates {(exact, 9.000)(Quasi-Newton, 10.000)};
-	\addplot[cond] coordinates {(exact, 9.000)(Quasi-Newton, 10.000)};
-	\addplot[comb] coordinates {(exact, 9.000)(Quasi-Newton, 10.000)};
+	\addplot[base] coordinates {(exact, 8.400)(Quasi-Newton, 10.800)};
+	\addplot[fs] coordinates {(exact, 8.400)(Quasi-Newton, 11.000)};
+	\addplot[cond] coordinates {(exact, 8.400)(Quasi-Newton, 10.800)};
+	\addplot[comb] coordinates {(exact, 8.400)(Quasi-Newton, 11.000)};
 
 %---5 Cart Pendulum---
 \nextgroupplot[title={Cart Pendulum}]
-	\addplot[base] coordinates {(exact, 37.000)(Quasi-Newton, 54.500)};
-	\addplot[fs] coordinates {(exact, 38.000)(Quasi-Newton, 49.500)};
-	\addplot[cond] coordinates {(exact, 38.000)(Quasi-Newton, 55.000)};
-	\addplot[comb] coordinates {(exact, 37.000)(Quasi-Newton, 53.000)};
+	\addplot[base] coordinates {(exact, 36.600)(Quasi-Newton, 52.400)};
+	\addplot[fs] coordinates {(exact, 38.200)(Quasi-Newton, 53.600)};
+	\addplot[cond] coordinates {(exact, 37.000)(Quasi-Newton, 53.800)};
+	\addplot[comb] coordinates {(exact, 37.800)(Quasi-Newton, 53.600)};
 
 %---6 Cart Pendulum Mayer---
 \nextgroupplot[title={Cart Pendulum Mayer}, ylabel={Rel. Iterations}]
-	\addplot[base] coordinates {(exact, 39.000)(Quasi-Newton, 62.000)};
-	\addplot[fs] coordinates {(exact, 44.000)(Quasi-Newton, 56.000)};
-	\addplot[cond] coordinates {(exact, 39.000)(Quasi-Newton, inf)};
-	\addplot[comb] coordinates {(exact, 44.000)(Quasi-Newton, 51.000)};
+	\addplot[base] coordinates {(exact, 40.600)(Quasi-Newton, 58.800)};
+	\addplot[fs] coordinates {(exact, 42.000)(Quasi-Newton, 55.800)};
+	\addplot[cond] coordinates {(exact, 40.600)(Quasi-Newton, 58.600)};
+	\addplot[comb] coordinates {(exact, 42.000)(Quasi-Newton, 55.800)};
 
-%---7 Catalyst Mixing---
-\nextgroupplot[title={Catalyst Mixing}]
-	\addplot[base] coordinates {(exact, 9.000)(Quasi-Newton, 25.000)};
-	\addplot[fs] coordinates {(exact, 9.000)(Quasi-Newton, 20.000)};
-	\addplot[cond] coordinates {(exact, 9.000)(Quasi-Newton, 25.000)};
-	\addplot[comb] coordinates {(exact, 9.000)(Quasi-Newton, 20.000)};
-
-%---8 Cushioned Oscillation Mayer---
+%---7 Cushioned Oscillation Mayer---
 \nextgroupplot[title={Cushioned Oscillation Mayer}]
-	\addplot[base] coordinates {(exact, 13.000)(Quasi-Newton, 20.000)};
-	\addplot[fs] coordinates {(exact, 13.000)(Quasi-Newton, 21.000)};
-	\addplot[cond] coordinates {(exact, 15.000)(Quasi-Newton, 20.000)};
-	\addplot[comb] coordinates {(exact, 15.000)(Quasi-Newton, 21.000)};
+	\addplot[base] coordinates {(exact, 13.200)(Quasi-Newton, 16.800)};
+	\addplot[fs] coordinates {(exact, 13.200)(Quasi-Newton, 16.400)};
+	\addplot[cond] coordinates {(exact, 15.600)(Quasi-Newton, 16.800)};
+	\addplot[comb] coordinates {(exact, 15.600)(Quasi-Newton, 16.400)};
 
-%---9 Dielectrophoretic Particle Mayer---
+%---8 Dielectrophoretic Particle Mayer---
 \nextgroupplot[title={Dielectrophoretic Particle Mayer}]
-	\addplot[base] coordinates {(exact, 12.000)(Quasi-Newton, 22.000)};
-	\addplot[fs] coordinates {(exact, 12.000)(Quasi-Newton, 19.000)};
-	\addplot[cond] coordinates {(exact, 12.000)(Quasi-Newton, 22.000)};
-	\addplot[comb] coordinates {(exact, 12.000)(Quasi-Newton, 19.000)};
+	\addplot[base] coordinates {(exact, 8.000)(Quasi-Newton, 13.600)};
+	\addplot[fs] coordinates {(exact, 8.000)(Quasi-Newton, 13.000)};
+	\addplot[cond] coordinates {(exact, 8.000)(Quasi-Newton, 13.600)};
+	\addplot[comb] coordinates {(exact, 8.000)(Quasi-Newton, 13.400)};
 
-%---10 Double Oscillator---
+%---9 Double Oscillator---
 \nextgroupplot[title={Double Oscillator}]
-	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
-	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 5.000)};
-	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
-	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 5.000)};
-
-%---11 Double Oscillator Mayer---
-\nextgroupplot[title={Double Oscillator Mayer}, ylabel={Rel. Iterations}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 11.000)};
-	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 10.000)};
-	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 11.000)};
-	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 10.000)};
-
-%---12 Ducted Fan---
-\nextgroupplot[title={Ducted Fan}]
-	\addplot[base] coordinates {(exact, 14.000)(Quasi-Newton, 24.000)};
-	\addplot[fs] coordinates {(exact, 13.000)(Quasi-Newton, 25.000)};
-	\addplot[cond] coordinates {(exact, 14.000)(Quasi-Newton, 24.000)};
-	\addplot[comb] coordinates {(exact, 13.000)(Quasi-Newton, 25.000)};
-
-%---13 Egerstedt---
-\nextgroupplot[title={Egerstedt}]
-	\addplot[base] coordinates {(exact, 119.000)(Quasi-Newton, 63.000)};
-	\addplot[fs] coordinates {(exact, 121.000)(Quasi-Newton, 137.000)};
-	\addplot[cond] coordinates {(exact, 12.000)(Quasi-Newton, 39.000)};
-	\addplot[comb] coordinates {(exact, 13.000)(Quasi-Newton, 48.000)};
-
-%---14 Egerstedt Mayer---
-\nextgroupplot[title={Egerstedt Mayer}]
-	\addplot[base] coordinates {(exact, 56.000)(Quasi-Newton, 200.000)};
-	\addplot[fs] coordinates {(exact, 43.000)(Quasi-Newton, 83.000)};
-	\addplot[cond] coordinates {(exact, 15.000)(Quasi-Newton, 37.000)};
-	\addplot[comb] coordinates {(exact, 14.000)(Quasi-Newton, 37.000)};
-
-%---15 Electric Car---
-\nextgroupplot[title={Electric Car}]
-	\addplot[base] coordinates {(exact, 5.000)(Quasi-Newton, 11.000)};
-	\addplot[fs] coordinates {(exact, 5.000)(Quasi-Newton, 11.000)};
-	\addplot[cond] coordinates {(exact, 5.000)(Quasi-Newton, 11.000)};
-	\addplot[comb] coordinates {(exact, 5.000)(Quasi-Newton, 11.000)};
-
-%---16 Electric Car Mayer---
-\nextgroupplot[title={Electric Car Mayer}, ylabel={Rel. Iterations}]
-	\addplot[base] coordinates {(exact, 6.000)(Quasi-Newton, 21.000)};
-	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 21.000)};
-	\addplot[cond] coordinates {(exact, 6.000)(Quasi-Newton, 21.000)};
-	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 21.000)};
-
-%---17 Fuller---
-\nextgroupplot[title={Fuller}]
-	\addplot[base] coordinates {(exact, 10.000)(Quasi-Newton, 13.000)};
-	\addplot[fs] coordinates {(exact, 10.000)(Quasi-Newton, 13.000)};
-	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 13.000)};
-	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 13.000)};
-
-%---18 Fuller Mayer---
-\nextgroupplot[title={Fuller Mayer}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
-	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
-	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
-	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 9.000)};
-
-%---19 Hang Glider---
-\nextgroupplot[title={Hang Glider}]
-	\addplot[base] coordinates {(exact, 11.000)(Quasi-Newton, 45.000)};
-	\addplot[fs] coordinates {(exact, 11.000)(Quasi-Newton, 38.000)};
-	\addplot[cond] coordinates {(exact, 11.000)(Quasi-Newton, 45.000)};
-	\addplot[comb] coordinates {(exact, 11.000)(Quasi-Newton, 38.000)};
-
-%---20 Hanging Chain---
-\nextgroupplot[title={Hanging Chain}]
-	\addplot[base] coordinates {(exact, 20.000)(Quasi-Newton, 27.000)};
-	\addplot[fs] coordinates {(exact, 20.000)(Quasi-Newton, 33.000)};
-	\addplot[cond] coordinates {(exact, 21.000)(Quasi-Newton, 27.000)};
-	\addplot[comb] coordinates {(exact, 20.000)(Quasi-Newton, 33.000)};
-
-%---21 Lotka Competitive---
-\nextgroupplot[title={Lotka Competitive}, ylabel={Rel. Iterations}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 23.000)};
-	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 20.000)};
-	\addplot[cond] coordinates {(exact, 12.000)(Quasi-Newton, 23.000)};
-	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 13.000)};
-
-%---22 Lotka Competitive Mayer---
-\nextgroupplot[title={Lotka Competitive Mayer}]
-	\addplot[base] coordinates {(exact, 11.000)(Quasi-Newton, 21.000)};
-	\addplot[fs] coordinates {(exact, 12.000)(Quasi-Newton, 24.000)};
-	\addplot[cond] coordinates {(exact, 11.000)(Quasi-Newton, 21.000)};
-	\addplot[comb] coordinates {(exact, 12.000)(Quasi-Newton, 24.000)};
-
-%---23 Lotka Shared---
-\nextgroupplot[title={Lotka Shared}]
-	\addplot[base] coordinates {(exact, 6.000)(Quasi-Newton, 97.000)};
-	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 67.000)};
-	\addplot[cond] coordinates {(exact, 8.000)(Quasi-Newton, 33.000)};
-	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 14.000)};
-
-%---24 Lotka Shared Mayer---
-\nextgroupplot[title={Lotka Shared Mayer}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 19.000)};
-	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 20.000)};
-	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 19.000)};
-	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 18.000)};
-
-%---25 Lotka Volterra---
-\nextgroupplot[title={Lotka Volterra}]
-	\addplot[base] coordinates {(exact, 6.000)(Quasi-Newton, 14.000)};
-	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 15.000)};
-	\addplot[cond] coordinates {(exact, 6.000)(Quasi-Newton, 14.000)};
-	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 15.000)};
-
-%---26 Lotka Volterra Mayer---
-\nextgroupplot[title={Lotka Volterra Mayer}, ylabel={Rel. Iterations},
-legend columns=-1, % Horizontal legend 
-legend entries={base, fs, cond, comb},
-legend style={draw=none, fill=none, font=\footnotesize,
-column sep=0.5cm,
-/tikz/every odd column/.append style={column sep=0cm},},
-legend to name=CommonLegendAlg2]
-	\addplot[base] coordinates {(exact, 10.000)(Quasi-Newton, 19.000)};
-	\addplot[fs] coordinates {(exact, 10.000)(Quasi-Newton, 19.000)};
-	\addplot[cond] coordinates {(exact, 10.000)(Quasi-Newton, 21.000)};
-	\addplot[comb] coordinates {(exact, 10.000)(Quasi-Newton, 19.000)};
-
-%---27 LQR---
-\nextgroupplot[title={LQR}]
 	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 
-%---28 Moon Landing---
-\nextgroupplot[title={Moon Landing}]
-	\addplot[base] coordinates {(exact, 8.000)(Quasi-Newton, 15.000)};
-	\addplot[fs] coordinates {(exact, 8.000)(Quasi-Newton, 14.000)};
-	\addplot[cond] coordinates {(exact, 8.000)(Quasi-Newton, 15.000)};
-	\addplot[comb] coordinates {(exact, 8.000)(Quasi-Newton, 14.000)};
+%---10 Double Oscillator Mayer---
+\nextgroupplot[title={Double Oscillator Mayer}]
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 11.000)};
+	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 11.600)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 11.000)};
+	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 12.400)};
 
-%---29 Mountain Car Mayer---
+%---11 Ducted Fan---
+\nextgroupplot[title={Ducted Fan}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 9.200)(Quasi-Newton, 20.200)};
+	\addplot[fs] coordinates {(exact, 9.600)(Quasi-Newton, 22.200)};
+	\addplot[cond] coordinates {(exact, 9.200)(Quasi-Newton, 20.800)};
+	\addplot[comb] coordinates {(exact, 9.600)(Quasi-Newton, 23.200)};
+
+%---12 Egerstedt---
+\nextgroupplot[title={Egerstedt}]
+	\addplot[base] coordinates {(exact, 123.600)(Quasi-Newton, 199.400)};
+	\addplot[fs] coordinates {(exact, 79.000)(Quasi-Newton, 118.200)};
+	\addplot[cond] coordinates {(exact, 15.200)(Quasi-Newton, 52.800)};
+	\addplot[comb] coordinates {(exact, 13.600)(Quasi-Newton, 49.600)};
+
+%---13 Egerstedt Mayer---
+\nextgroupplot[title={Egerstedt Mayer}]
+	\addplot[base] coordinates {(exact, 64.000)(Quasi-Newton, 128.800)};
+	\addplot[fs] coordinates {(exact, 64.000)(Quasi-Newton, 95.400)};
+	\addplot[cond] coordinates {(exact, 11.600)(Quasi-Newton, 49.200)};
+	\addplot[comb] coordinates {(exact, 11.800)(Quasi-Newton, 41.000)};
+
+%---14 Electric Car---
+\nextgroupplot[title={Electric Car}]
+	\addplot[base] coordinates {(exact, 5.000)(Quasi-Newton, 9.800)};
+	\addplot[fs] coordinates {(exact, 5.000)(Quasi-Newton, 11.400)};
+	\addplot[cond] coordinates {(exact, 5.000)(Quasi-Newton, 9.800)};
+	\addplot[comb] coordinates {(exact, 5.000)(Quasi-Newton, 11.400)};
+
+%---15 Electric Car Mayer---
+\nextgroupplot[title={Electric Car Mayer}]
+	\addplot[base] coordinates {(exact, 5.200)(Quasi-Newton, 21.800)};
+	\addplot[fs] coordinates {(exact, 5.200)(Quasi-Newton, 22.800)};
+	\addplot[cond] coordinates {(exact, 5.200)(Quasi-Newton, 21.800)};
+	\addplot[comb] coordinates {(exact, 5.200)(Quasi-Newton, 22.800)};
+
+%---16 Fuller---
+\nextgroupplot[title={Fuller}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 10.000)(Quasi-Newton, 11.600)};
+	\addplot[fs] coordinates {(exact, 10.000)(Quasi-Newton, 11.600)};
+	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 11.600)};
+	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 11.600)};
+
+%---17 Fuller Mayer---
+\nextgroupplot[title={Fuller Mayer}]
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 8.800)};
+	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 8.800)};
+	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 9.000)};
+
+%---18 Hang Glider---
+\nextgroupplot[title={Hang Glider}]
+	\addplot[base] coordinates {(exact, 13.400)(Quasi-Newton, 42.400)};
+	\addplot[fs] coordinates {(exact, 12.600)(Quasi-Newton, 39.000)};
+	\addplot[cond] coordinates {(exact, 13.400)(Quasi-Newton, 42.400)};
+	\addplot[comb] coordinates {(exact, 12.600)(Quasi-Newton, 39.000)};
+
+%---19 Hanging Chain---
+\nextgroupplot[title={Hanging Chain}]
+	\addplot[base] coordinates {(exact, 14.000)(Quasi-Newton, 31.800)};
+	\addplot[fs] coordinates {(exact, 14.400)(Quasi-Newton, 39.000)};
+	\addplot[cond] coordinates {(exact, 14.000)(Quasi-Newton, 39.400)};
+	\addplot[comb] coordinates {(exact, 14.400)(Quasi-Newton, 39.000)};
+
+%---20 Lotka Competitive---
+\nextgroupplot[title={Lotka Competitive}]
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 13.400)};
+	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 12.400)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 13.600)};
+	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 12.400)};
+
+%---21 Lotka Competitive Mayer---
+\nextgroupplot[title={Lotka Competitive Mayer}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 11.400)(Quasi-Newton, 22.000)};
+	\addplot[fs] coordinates {(exact, 11.200)(Quasi-Newton, 22.800)};
+	\addplot[cond] coordinates {(exact, 11.400)(Quasi-Newton, 22.000)};
+	\addplot[comb] coordinates {(exact, 11.200)(Quasi-Newton, 22.800)};
+
+%---22 Lotka Shared---
+\nextgroupplot[title={Lotka Shared}]
+	\addplot[base] coordinates {(exact, 6.000)(Quasi-Newton, 15.400)};
+	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 14.200)};
+	\addplot[cond] coordinates {(exact, 6.000)(Quasi-Newton, 15.400)};
+	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 14.600)};
+
+%---23 Lotka Shared Mayer---
+\nextgroupplot[title={Lotka Shared Mayer}]
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 16.800)};
+	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 16.400)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 16.800)};
+	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 16.400)};
+
+%---24 Lotka Volterra---
+\nextgroupplot[title={Lotka Volterra}]
+	\addplot[base] coordinates {(exact, 6.000)(Quasi-Newton, 14.800)};
+	\addplot[fs] coordinates {(exact, 6.000)(Quasi-Newton, 16.400)};
+	\addplot[cond] coordinates {(exact, 6.000)(Quasi-Newton, 14.800)};
+	\addplot[comb] coordinates {(exact, 6.000)(Quasi-Newton, 16.400)};
+
+%---25 Lotka Volterra Mayer---
+\nextgroupplot[title={Lotka Volterra Mayer}]
+	\addplot[base] coordinates {(exact, 10.000)(Quasi-Newton, 19.400)};
+	\addplot[fs] coordinates {(exact, 10.000)(Quasi-Newton, 21.200)};
+	\addplot[cond] coordinates {(exact, 10.000)(Quasi-Newton, 19.400)};
+	\addplot[comb] coordinates {(exact, 10.000)(Quasi-Newton, 21.200)};
+
+%---26 LQR---
+\nextgroupplot[title={LQR}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 5.200)};
+	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 5.200)};
+	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 5.200)};
+	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 5.200)};
+
+%---27 Moon Landing---
+\nextgroupplot[title={Moon Landing}]
+	\addplot[base] coordinates {(exact, 7.800)(Quasi-Newton, 15.800)};
+	\addplot[fs] coordinates {(exact, 7.800)(Quasi-Newton, 13.800)};
+	\addplot[cond] coordinates {(exact, 8.000)(Quasi-Newton, 15.800)};
+	\addplot[comb] coordinates {(exact, 7.800)(Quasi-Newton, 13.800)};
+
+%---28 Mountain Car Mayer---
 \nextgroupplot[title={Mountain Car Mayer}]
 	\addplot[base] coordinates {(exact, 18.000)(Quasi-Newton, 33.000)};
-	\addplot[fs] coordinates {(exact, 16.000)(Quasi-Newton, 26.000)};
+	\addplot[fs] coordinates {(exact, 18.600)(Quasi-Newton, 27.600)};
 	\addplot[cond] coordinates {(exact, 17.000)(Quasi-Newton, 33.000)};
-	\addplot[comb] coordinates {(exact, 16.000)(Quasi-Newton, 26.000)};
+	\addplot[comb] coordinates {(exact, 19.400)(Quasi-Newton, 27.600)};
 
-%---30 Ocean---
+%---29 Ocean---
 \nextgroupplot[title={Ocean}]
 	\addplot[base] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[fs] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[cond] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 	\addplot[comb] coordinates {(exact, 4.000)(Quasi-Newton, 6.000)};
 
-%---31 Quadrotor---
-\nextgroupplot[title={Quadrotor}, ylabel={Rel. Iterations}]
+%---30 Quadrotor---
+\nextgroupplot[title={Quadrotor}]
 	\addplot[base] coordinates {(exact, 31.000)(Quasi-Newton, 36.000)};
-	\addplot[fs] coordinates {(exact, 30.000)(Quasi-Newton, 34.000)};
+	\addplot[fs] coordinates {(exact, 30.000)(Quasi-Newton, 33.000)};
 	\addplot[cond] coordinates {(exact, 27.000)(Quasi-Newton, 36.000)};
-	\addplot[comb] coordinates {(exact, 31.000)(Quasi-Newton, 34.000)};
+	\addplot[comb] coordinates {(exact, 31.000)(Quasi-Newton, 33.000)};
 
-%---32 Rao Mease---
-\nextgroupplot[title={Rao Mease}]
-	\addplot[base] coordinates {(exact, 5.000)(Quasi-Newton, 6.000)};
-	\addplot[fs] coordinates {(exact, 5.000)(Quasi-Newton, 6.000)};
-	\addplot[cond] coordinates {(exact, 5.000)(Quasi-Newton, 6.000)};
-	\addplot[comb] coordinates {(exact, 5.000)(Quasi-Newton, 6.000)};
+%---31 Rao Mease---
+\nextgroupplot[title={Rao Mease}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 5.000)(Quasi-Newton, 6.200)};
+	\addplot[fs] coordinates {(exact, 5.000)(Quasi-Newton, 6.400)};
+	\addplot[cond] coordinates {(exact, 5.000)(Quasi-Newton, 6.200)};
+	\addplot[comb] coordinates {(exact, 5.000)(Quasi-Newton, 6.400)};
 
-%---33 Three Tank---
+%---32 Three Tank---
 \nextgroupplot[title={Three Tank}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 26.000)};
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 24.400)};
 	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 20.000)};
-	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 27.000)};
-	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 20.000)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 24.400)};
+	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 20.200)};
 
-%---34 Three Tank Mayer---
+%---33 Three Tank Mayer---
 \nextgroupplot[title={Three Tank Mayer}]
-	\addplot[base] coordinates {(exact, 9.000)(Quasi-Newton, 18.000)};
-	\addplot[fs] coordinates {(exact, 9.000)(Quasi-Newton, 16.000)};
-	\addplot[cond] coordinates {(exact, 9.000)(Quasi-Newton, 18.000)};
-	\addplot[comb] coordinates {(exact, 9.000)(Quasi-Newton, 16.000)};
+	\addplot[base] coordinates {(exact, 9.000)(Quasi-Newton, 18.600)};
+	\addplot[fs] coordinates {(exact, 9.000)(Quasi-Newton, 19.400)};
+	\addplot[cond] coordinates {(exact, 9.000)(Quasi-Newton, 20.800)};
+	\addplot[comb] coordinates {(exact, 9.000)(Quasi-Newton, 19.800)};
 
-%---35 Van der Pol---
+%---34 Van der Pol---
 \nextgroupplot[title={Van der Pol}]
-	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
-	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 10.000)};
-	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 9.000)};
-	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 10.000)};
+	\addplot[base] coordinates {(exact, 7.000)(Quasi-Newton, 10.400)};
+	\addplot[fs] coordinates {(exact, 7.000)(Quasi-Newton, 10.600)};
+	\addplot[cond] coordinates {(exact, 7.000)(Quasi-Newton, 10.400)};
+	\addplot[comb] coordinates {(exact, 7.000)(Quasi-Newton, 10.600)};
 
-%---36 Van der Pol Mayer---
-\nextgroupplot[title={Van der Pol Mayer}, ylabel={Rel. Iterations}]
-	\addplot[base] coordinates {(exact, 16.000)(Quasi-Newton, 31.000)};
-	\addplot[fs] coordinates {(exact, 16.000)(Quasi-Newton, 27.000)};
-	\addplot[cond] coordinates {(exact, 16.000)(Quasi-Newton, 30.000)};
-	\addplot[comb] coordinates {(exact, 16.000)(Quasi-Newton, 25.000)};
+%---35 Van der Pol Mayer---
+\nextgroupplot[title={Van der Pol Mayer}]
+	\addplot[base] coordinates {(exact, 17.200)(Quasi-Newton, 28.000)};
+	\addplot[fs] coordinates {(exact, 17.200)(Quasi-Newton, 29.200)};
+	\addplot[cond] coordinates {(exact, 17.200)(Quasi-Newton, 28.000)};
+	\addplot[comb] coordinates {(exact, 17.200)(Quasi-Newton, 29.200)};
 
-%---37 Lotka OED---
-\nextgroupplot[title={Lotka OED}]
-	\addplot[base] coordinates {(exact, 23.000)(Quasi-Newton, 87.000)};
-	\addplot[fs] coordinates {(exact, 23.000)(Quasi-Newton, 84.000)};
-	\addplot[cond] coordinates {(exact, 21.000)(Quasi-Newton, 28.000)};
-	\addplot[comb] coordinates {(exact, 21.000)(Quasi-Newton, 35.000)};
+%---36 Lotka OED---
+\nextgroupplot[title={Lotka OED}, ylabel={Rel. Iterations}]
+	\addplot[base] coordinates {(exact, 22.800)(Quasi-Newton, 91.400)};
+	\addplot[fs] coordinates {(exact, 22.800)(Quasi-Newton, 88.400)};
+	\addplot[cond] coordinates {(exact, 21.000)(Quasi-Newton, 28.800)};
+	\addplot[comb] coordinates {(exact, 21.000)(Quasi-Newton, 28.800)};
 
-%---38 Dielectr Particle---
-\nextgroupplot[title={Dielectr Particle}]
-	\addplot[base] coordinates {(exact, 73.000)(Quasi-Newton, 52.000)};
-	\addplot[fs] coordinates {(exact, 61.000)(Quasi-Newton, 44.000)};
-	\addplot[cond] coordinates {(exact, 64.000)(Quasi-Newton, 50.000)};
-	\addplot[comb] coordinates {(exact, 63.000)(Quasi-Newton, 46.000)};
+%---37 Lotka Shared OED---
+\nextgroupplot[title={Lotka Shared OED}]
+	\addplot[base] coordinates {(exact, 63.400)(Quasi-Newton, 113.400)};
+	\addplot[fs] coordinates {(exact, 62.800)(Quasi-Newton, 132.200)};
+	\addplot[cond] coordinates {(exact, 46.600)(Quasi-Newton, 70.600)};
+	\addplot[comb] coordinates {(exact, 47.800)(Quasi-Newton, 80.000)};
+
+%---38 Dielectr Particle OED---
+\nextgroupplot[title={Dielectr Particle OED}]
+	\addplot[base] coordinates {(exact, 41.200)(Quasi-Newton, 59.800)};
+	\addplot[fs] coordinates {(exact, 35.800)(Quasi-Newton, 60.600)};
+	\addplot[cond] coordinates {(exact, 41.600)(Quasi-Newton, 61.200)};
+	\addplot[comb] coordinates {(exact, 36.600)(Quasi-Newton, 60.600)};
 
 %---39 Jackson OED---
 \nextgroupplot[title={Jackson OED}]
-	\addplot[base] coordinates {(exact, 10.000)(Quasi-Newton, 33.000)};
-	\addplot[fs] coordinates {(exact, 10.000)(Quasi-Newton, 20.000)};
-	\addplot[cond] coordinates {(exact, 11.000)(Quasi-Newton, 20.000)};
-	\addplot[comb] coordinates {(exact, 10.000)(Quasi-Newton, 28.000)};
+	\addplot[base] coordinates {(exact, 9.000)(Quasi-Newton, 17.800)};
+	\addplot[fs] coordinates {(exact, 9.000)(Quasi-Newton, 17.800)};
+	\addplot[cond] coordinates {(exact, 10.000)(Quasi-Newton, 19.400)};
+	\addplot[comb] coordinates {(exact, 10.000)(Quasi-Newton, 19.400)};
 
 %---40 Van der Pol OED---
 \nextgroupplot[title={Van der Pol OED}]
-	\addplot[base] coordinates {(exact, 103.000)(Quasi-Newton, 62.000)};
-	\addplot[fs] coordinates {(exact, 52.000)(Quasi-Newton, 74.000)};
-	\addplot[cond] coordinates {(exact, 103.000)(Quasi-Newton, 55.000)};
-	\addplot[comb] coordinates {(exact, 52.000)(Quasi-Newton, 59.000)};
+	\addplot[base] coordinates {(exact, 46.600)(Quasi-Newton, 93.600)};
+	\addplot[fs] coordinates {(exact, 47.600)(Quasi-Newton, 80.400)};
+	\addplot[cond] coordinates {(exact, 41.400)(Quasi-Newton, 81.600)};
+	\addplot[comb] coordinates {(exact, 43.200)(Quasi-Newton, 70.800)};
 

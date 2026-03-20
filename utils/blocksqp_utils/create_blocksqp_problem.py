@@ -65,15 +65,17 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                             lam_init=None, accepted_hess_init=[], condense_mode="default"):
     global plot_lift
     max_iter = input_opts.get("max_iter", 100)
+    # apply FSInit based on dynamic programming ever {refinement} iterations
+    # (-1) to turn it off
     refinement = input_opts.get("refinement", -1)
     exact_hess = input_opts.get("exact_hess", False)
     optim_lamb = input_opts.get("optim_lamb", False)
     optim_init = input_opts.get("optim_init", False)
     always_auto = input_opts.get("always_auto", False)
     auto_condense = input_opts.get("auto_condense", False)
-    verbose = input_opts.get("verbose", True)
-    plot_iter = input_opts.get("plot_iter", True)
-    log_results = input_opts.get("log_results", True)
+    verbose = input_opts.get("verbose", False)
+    plot_iter = input_opts.get("plot_iter", False)
+    log_results = input_opts.get("log_results", False)
 
     opts = blocksqp_options.get_blocksqp_options(exact_hess)
 
@@ -99,9 +101,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     s_dim = curr_problem.s_dim
     q_dim = curr_problem.q_dim
     ode = curr_problem.get_ode()
-
-    if verbose:
-        print("INITIAL LIFTING: ", grid["lift"])
 
     num_time_points = len(grid["time"])
     starting_times = [grid["time"][i] for i in range(num_time_points) if grid["lift"][i] or i == 0]
@@ -155,7 +154,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         problem.hess = lambda xi, lambd: to_blocks_LT(lag_hess_print(xi, lambd), sparsity_pattern)
 
     problem.g = lambda arg_x: np.array(func_g(arg_x)).reshape(-1)
-    problem.f = lambda arg_x: np.array(func_f(arg_x)).reshape(-1)
+    problem.f = lambda arg_x: float(func_f(arg_x))
     problem.nVar = x.shape[0]
     problem.nCon = g.shape[0]
     problem.set_blockIndex(sparsity_pattern)
@@ -290,6 +289,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
 
             '''
             # compute kappa values of Hessian approximation
+            # (very expensive)
             log = log_conv_data.add_kappa(
                 log, xi_temp, old_point, np.array(lam_temp).reshape(-1, 1),
                 meth.vars, lag_hess, lag_der, problem.jac_g, sparsity_pattern,

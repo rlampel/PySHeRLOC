@@ -32,8 +32,10 @@ class OEDGUI(GUIBaseClass.GUI):
             "Dielectr Particle",
             "Diels Alder OED",
             "Horse OED",
+            "FitzHugh OED",
             "Jackson OED",
             "Lotka OED",
+            "Lotka Shared OED",
             "LQR OED",
             "Nonlinear Toy OED",
             "Quadrotor OED",
@@ -389,7 +391,6 @@ class OEDGUI(GUIBaseClass.GUI):
 
         match curr_lifting_type:
             case "all":
-                # lifting_points = [1 for i in range(num_lifts + 1)]
                 lifting_points = [0] * len(time_points)
 
                 lift_interval = num_controls // num_lifts
@@ -519,6 +520,7 @@ class OEDGUI(GUIBaseClass.GUI):
                     refine = -1
                 import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
                 opts = {}
+                opts["plot_iter"] = True
                 opts["exact_hess"] = self.exact_hessian.get()
                 opts["cond_init"] = self.cond_init.get()
                 opts["refinement"] = refine

@@ -70,13 +70,13 @@ class problem(BaseOCClass.super_problem):
         r0, v0, m0 = self.r0, self.v0, self.m0
         init = {}
         init["s_start"] = cs.DM([r0, v0, m0])
-        init["q_start"] = [0.4, 0.142857]
+        init["q_start"] = [0.5, 0.1]
         init["s_dim"] = self.s_dim
         init["q_dim"] = self.q_dim
         return init
 
     def get_grid_details(self):
-        max_t = 10
+        max_t = 1
         return max_t
 
     def start_bounds(self, start):
@@ -87,7 +87,7 @@ class problem(BaseOCClass.super_problem):
 
     def control_bounds(self, control):
         T_max = self.T_max
-        lbu = [0, 1.e-5]
+        lbu = [0, 1.e-2]
         ubu = [1, T_max]
         return control, ubu, lbu
 

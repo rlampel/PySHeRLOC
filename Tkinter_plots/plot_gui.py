@@ -122,12 +122,12 @@ def plot_segmented(GUI, init, grid, ode,
                     scaled_state_labels[label_ind] += r"$\ \cdot \ " + str(s) + "$"
                 label_ind += 1
 
-    ax_control.legend(control_labels, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12)
-    ax_state.legend(scaled_state_labels, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=12)
-    ax_state.set_xlabel("Time t", fontsize=16)
-    ax_control.set_xlabel("Time t", fontsize=16)
-    ax_state.set_ylabel("State value", fontsize=16)
-    ax_control.set_ylabel("Control value", fontsize=16)
+    ax_control.legend(control_labels, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=18)
+    ax_state.legend(scaled_state_labels, loc='center left', bbox_to_anchor=(1, 0.5), fontsize=18)
+    ax_state.set_xlabel(r"Time $t$", fontsize=22)
+    ax_control.set_xlabel(r"Time $t$", fontsize=22)
+    ax_state.set_ylabel("State value", fontsize=22)
+    ax_control.set_ylabel("Control value", fontsize=22)
     return ax_state
 
 

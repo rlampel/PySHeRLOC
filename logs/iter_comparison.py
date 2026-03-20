@@ -519,7 +519,7 @@ for k in range(len(problems)):
 
 table_data = np.reshape(table_data, (-1, 8))
 
-# print for table output all problems
+# print for table output
 for m in range(len(problems)):
     out = problems[m]
     col_prefix = "& \\multicolumn{1}{l|}{"

@@ -104,7 +104,7 @@ class problem(BaseOCClass.super_problem):
 
     def end_bounds(self, state):
         end_points = state[-self.o_dim:]
-        ubs = [0.2] * self.o_dim
+        ubs = [0.25] * self.o_dim
         lbs = [0] * self.o_dim
         return end_points, ubs, lbs
 

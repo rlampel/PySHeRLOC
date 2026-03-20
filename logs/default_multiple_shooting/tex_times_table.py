@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import os
 
 
@@ -17,24 +16,10 @@ def load_data(path):
     return data
 
 
-def plot_rows(data):
-    x_labels = [0, 2, 4, 8, 16, 32, 64]
-
-    for name, values in data.items():
-        plt.figure()
-        plt.bar(range(len(values)), values)
-        plt.xticks(range(len(values)), x_labels)
-        plt.xlabel("Scale")
-        plt.ylabel("Value")
-        plt.title(name)
-        plt.tight_layout()
-        plt.show()
-
-
 if __name__ == "__main__":
     # read list of problems
     dirname = os.path.dirname(__file__)
-    output_file = os.path.join(dirname, "tex_output.txt")
+    output_file = os.path.join(dirname, "tex_time_output.txt")
 
     excluded = [
         "LQR Mayer",
@@ -46,10 +31,10 @@ if __name__ == "__main__":
     ]
 
     files = [
-        "ipopt_exact_iters.dat",
-        "ipopt_quasi_newton_iters.dat",
-        "blocksqp2_exact_iters.dat",
-        "blocksqp2_quasi_newton_iters.dat"
+        "ipopt_exact_times.dat",
+        "ipopt_quasi_newton_times.dat",
+        "blocksqp2_exact_times.dat",
+        "blocksqp2_quasi_newton_times.dat"
     ]
 
     x_labels = [0, 2, 4, 8, 16, 32, 64]
@@ -71,7 +56,7 @@ if __name__ == "__main__":
 
             # add y-labels
             if counter % 5 == 0:
-                output += ", ylabel={Rel. Iterations}"
+                output += ", ylabel={Time (s)}"
 
             if counter == 0:
                 output += ",\nlegend columns=-1, % Horizontal legend \n"
@@ -79,7 +64,7 @@ if __name__ == "__main__":
                 output += "legend style={draw=none, fill=none, font=\\footnotesize,\n"
                 output += "column sep=0.5cm,\n"
                 output += "/tikz/every odd column/.append style={column sep=0cm},},\n"
-                output += "legend to name=CommonLegendComp"
+                output += "legend to name=CommonLegendTimeComp"
                 output += str(counter // 24 + 1)
 
             output += "]\n"
@@ -89,8 +74,8 @@ if __name__ == "__main__":
                 curr_data = data[curr_name]
 
                 # rescale the current data to relative iterations
-                min_item = min(curr_data)
-                curr_data = [el / min_item for el in curr_data]
+                # min_item = min(curr_data)
+                # curr_data = [el / min_item for el in curr_data]
 
                 output += "\t\\addplot[" + style_names[m] + "] coordinates {"
                 for k in range(len(curr_data)):

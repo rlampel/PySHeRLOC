@@ -8,7 +8,7 @@ class problem(BaseOCClass.super_problem):
     q_dim = 3
     p_dim = 2
     is_inverse = False
-    reg_init = [1.e-3, 0., 1.e-3]
+    reg_init = [1.e-1, 0., 1.e-1]
     state_indices = [i for i in range(2)]
     state_scales = [1.] * s_dim
     state_scales[1] = 0.1
@@ -42,7 +42,10 @@ class problem(BaseOCClass.super_problem):
         w = cs.MX.sym('w', 2)
 
         # Model equations
-        x_dot_p = cs.vertcat((p[0] - x2**2) * x1 - x2 + u, p[1] + x1)
+        x_dot_p = cs.vertcat(
+            (p[0] - x2**2) * x1 - x2 + u,
+            p[1] + x1
+        )
 
         # f equations
         f = cs.Function('f', [x, p, u], [x_dot_p])
