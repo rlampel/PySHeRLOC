@@ -21,18 +21,148 @@ from the same folder as the file itself.
 
 The Problems can be solved using IPOPT, blockSQP, blockSQP2, or fatrop.
 Benchmark problems can be found inside the `Apps` folder. Those include, among many others:
-- Batch Reactor
-- Bioreactor
-- Catalyst Mixing
-- D'Onofrio
-- Egerstedt
-- Fuller 
-- Hanging Chain
-- Lotka Volterra
-- Lotka Volterra OED
-- Quadrotor
-- Stirred Tank Reactor
-- Van der Pol
+<table>
+    <tr>
+        <td>
+            Bioreactor
+        </td>
+        <td>
+            Bioreactor Mayer
+        </td>
+        <td>
+            Bryson Denham
+        </td>
+        <td>
+            Bryson Denham Mayer
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Cart Pendulum
+        </td>
+        <td>
+            Cart Pendulum Mayer
+        </td>
+        <td>
+            Catalyst Mixing
+        </td>
+        <td>
+            Cushioned Oscillation Mayer
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Dielectrophoretic Particle Mayer
+        </td>
+        <td>
+            Double Oscillator
+        </td>
+        <td>
+            Double Oscillator Mayer
+        </td>
+        <td>
+            Ducted Fan
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Egerstedt
+        </td>
+        <td>
+            Egerstedt Mayer
+        </td>
+        <td>
+            Electric Car
+        </td>
+        <td>
+            Electric Car Mayer
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Fuller
+        </td>
+        <td>
+            Fuller Mayer
+        </td>
+        <td>
+            Hang Glider
+        </td>
+        <td>
+            Hanging Chain
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Lotka Competitive
+        </td>
+        <td>
+            Lotka Competitive Mayer
+        </td>
+        <td>
+            Lotka Shared
+        </td>
+        <td>
+            Lotka Shared Mayer
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Lotka Volterra
+        </td>
+        <td>
+            Lotka Volterra Mayer
+        </td>
+        <td>
+            LQR
+        </td>
+        <td>
+            Moon Landing
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Mountain Car Mayer
+        </td>
+        <td>
+            Ocean
+        </td>
+        <td>
+            Quadrotor
+        </td>
+        <td>
+            Rao Mease
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Three Tank
+        </td>
+        <td>
+            Three Tank Mayer
+        </td>
+        <td>
+            Van der Pol
+        </td>
+        <td>
+            Van der Pol Mayer
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Lotka OED
+        </td>
+        <td>
+            Dielectr Particle OED
+        </td>
+        <td>
+            Jackson OED
+        </td>
+        <td>
+            Van der Pol OED
+        </td>
+    </tr>
+</table
 
 
 ## Using the new BlockSQP
