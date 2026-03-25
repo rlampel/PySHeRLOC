@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the file containing the benchmark names
-INPUT_FILE="oed_problems.txt"
+INPUT_FILE="benchmark_problems.txt"
 
 # Check if the file exists before starting
 if [[ ! -f "$INPUT_FILE" ]]; then
@@ -10,7 +10,7 @@ if [[ ! -f "$INPUT_FILE" ]]; then
 fi
 
 # Arrays for the boolean combinations
-SOLVERS=("IPOPT")
+SOLVERS=("blockSQP2" "IPOPT")
 BOOLS=("n" "y")
 
 # Nested loops for all 8 combinations (-fs, -hess, -cond)

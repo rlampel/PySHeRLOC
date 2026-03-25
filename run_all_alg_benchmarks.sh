@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Define the file containing the benchmark names
-# INPUT_FILE="benchmark_problems.txt"
-INPUT_FILE="oed_problems.txt"
+INPUT_FILE="benchmark_problems.txt"
 
 # Check if the file exists before starting
 if [[ ! -f "$INPUT_FILE" ]]; then

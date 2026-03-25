@@ -1,5 +1,5 @@
 # Python software for Strategies and Heuristics Regarding Lifting of Optimal Control problems (PySHeRLOC)
-
+This software implements the benchmarks and algorithms described in [1].
 ## Getting started
 First, create a new virtual python environment, e.g.,
 ```
@@ -13,13 +13,30 @@ python -m pip install -r requirements.txt
 
 Now you can start the solver with user interface by running 
 ```
-python GUI.py
+python GUI.py   # for the normal optimal control problems
+python OED_GUI.py   # for OED problems
 ```
 from the same folder as the file itself.
 
+To benchmark all problems listed in `benchmark_problems.txt`, run:
+```
+bash run_all_alg_benchmarks.sh   # to benchmark all algorithms
+bash run_all_def_benchmarks.sh   # to benchmark all shooting discretizations
+```
+
+Alternatively, you can run the corresponding benchmark with the desire arguments, e.g.,
+```
+# benchmarks the Bioreactor problem using the exact Hessian variant of blockSQP2
+python benchmark_def.py -n "Bioreactor" -hess y -solver blockSQP2
+
+# benchmarks the automatic condensing algorithm for Lotka OED using the Quasi-Newton variant of blockSQP2 
+python benchmark_def.py -n "Lotka OED" -hess n -fs n -cond y
+```
+
+
 ![User Interface on MacOS](assets/gui.png)
 
-The Problems can be solved using IPOPT, blockSQP, blockSQP2, or fatrop.
+The problem titles refer to the description on [mintOC](mintoc.de). They can be solved using IPOPT, blockSQP, blockSQP2, or fatrop.
 Benchmark problems can be found inside the `Apps` folder. Those include, among many others:
 <table>
     <tr>
@@ -175,3 +192,4 @@ To use the new version of BlockSQP instead of the one included in CasADi, you ha
 ## Using the CasADi BlockSQP
 To use the CasADi version of BlockSQP, you have to configure the [ma27 solver](https://www.hsl.rl.ac.uk/ipopt/).
 
+[1]: [Lampel, R., Sager, S.: "On lifting strategies for optimal control problems"]
