@@ -183,15 +183,16 @@ Benchmark problems can be found inside the `Apps` folder. Those include, among m
 
 
 ## Using the blockSQP2
-To use BlockSQP2, you have to follow the installation instructions from [2]. Afterwards, change the path inside the file `blocksqp_path.txt` to your local installation:
+To use blockSQP2, you have to follow the installation instructions from [2]. Afterwards, change the path inside the file `blocksqp_path.txt` to your local installation:
 ```
-# path to your local installation of BlockSQP 2:
+# path to your local installation of blockSQP2:
 {PATH_TO_LOCAL_INSTALLATION}/blockSQP2/Python
 ```
 
 ## Using the CasADi blockSQP
-To use the CasADi version of BlockSQP, you have to configure the [ma27 solver](https://www.hsl.rl.ac.uk/ipopt/).
+To use the CasADi version of blockSQP, you have to configure the [ma27 solver](https://www.hsl.rl.ac.uk/ipopt/).
 
 ## References
 [1]: [Lampel, R., Sager, S.: "On lifting strategies for optimal control problems"]
-[1]: [Wittmann, R.: "blockSQP2"](https://github.com/rlampel/blockSQP2)
+
+[2]: [Wittmann, R.: "blockSQP2"](https://github.com/rlampel/blockSQP2)
