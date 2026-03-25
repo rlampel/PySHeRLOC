@@ -42,7 +42,7 @@ def graph_lift_heuristic(xi_temp, lam_temp, sort_grid, grid, ode, s_dim, q_dim,
     mu = np.linalg.norm(np.array(lam_temp).reshape(-1, 1), np.inf)
 
     s_init, plot_lift = refine_lifting(curr_problem, grid, starting_times,
-                                       s_temp, q_temp, mu)
+                                       s_temp, q_temp, mu, 'iter')
     xi_temp = np.array(cs.vertcat(q_temp, s_init))
 
     xi_temp = np.array(sort_vars_by_time(xi_temp, grid, s_dim, q_dim)[0])
@@ -70,10 +70,8 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     refinement = input_opts.get("refinement", -1)
     exact_hess = input_opts.get("exact_hess", False)
     optim_lamb = input_opts.get("optim_lamb", False)
-    optim_init = input_opts.get("optim_init", False)
     always_auto = input_opts.get("always_auto", False)
     auto_condense = input_opts.get("auto_condense", False)
-    verbose = input_opts.get("verbose", False)
     plot_iter = input_opts.get("plot_iter", False)
     log_results = input_opts.get("log_results", False)
 
@@ -182,14 +180,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         problem.lam_start = np.ones(problem.nVar + problem.nCon,
                                     dtype=np.float64).reshape(-1)
 
-    if optim_init:
-        print(f"Optimize Init with optimal Lambda: {cs.norm_inf(problem.lam_start)}")
-        start_point = graph_lift_heuristic(
-            start_point, problem.lam_start, sort_grid, grid, ode, s_dim, q_dim,
-            starting_times, curr_problem,
-            num_control_points, num_time_points
-        )
-
     problem.x_start = start_point
 
     # determine optimal Lagrange multipliers for exact hessian
@@ -260,7 +250,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
     kkt_norm_list = []
 
     while ret == 0 and i < max_iter:
-        ret = int(meth.run(1, 1).value)  # second argument: 0 restart, 1 keeps previous approximation
+        ret = int(meth.run(1, 1).value)  # second argument: 0 restart, 1 keeps previous approx.
         i += 1
         xi_temp = np.array(meth.get_xi()).reshape(-1)
         lam_temp = meth.get_lambda()
@@ -457,4 +447,5 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         i = cs.inf
 
     return i, meth, accepted_hess
+
 

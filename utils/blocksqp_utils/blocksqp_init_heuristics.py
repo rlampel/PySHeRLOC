@@ -141,7 +141,7 @@ def fsinit_merit(xi_temp, fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
         return xi_temp
 
 
-def refine_lifting(curr_problem, grid, starting_times, s_temp, q_temp, mu=1):
+def refine_lifting(curr_problem, grid, starting_times, s_temp, q_temp, mu=1, mode='init'):
     """Replace the current states by FSInit if merit and KKT do not get too much worse.
 
     Keyword arguments:
@@ -158,14 +158,16 @@ def refine_lifting(curr_problem, grid, starting_times, s_temp, q_temp, mu=1):
     lift_grid = grid.copy()
     lift_grid["time"] = starting_times
 
-    '''
-    lifting_points = dyn_lifting.best_graph_lift(curr_problem, starting_times,
-                                                 s_temp, q_temp,
-                                                 lift_grid, mu)
-    '''
-    lifting_points = fast_init_lift.best_init_lift(curr_problem, starting_times,
-                                                   s_temp, q_temp,
-                                                   lift_grid, mu)
+    if mode == 'init':
+        # simple version assuming that the controls are constant
+        lifting_points = fast_init_lift.best_init_lift(
+            curr_problem, starting_times, s_temp, q_temp, lift_grid, mu
+        )
+    else:
+        # more expensive version for general controls
+        lifting_points = dyn_lifting.best_graph_lift(
+            curr_problem, starting_times, s_temp, q_temp, lift_grid, mu
+        )
 
     red_lift_points = dyn_lifting.convert_lifting(lifting_points, starting_times)
     lifting_points = dyn_lifting.convert_lifting(lifting_points, grid["time"])

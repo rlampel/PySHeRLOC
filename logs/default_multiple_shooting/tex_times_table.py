@@ -22,19 +22,14 @@ if __name__ == "__main__":
     output_file = os.path.join(dirname, "tex_time_output.txt")
 
     excluded = [
-        "LQR Mayer",
-        "Ocean Mayer",
-        "F8 Aircraft Mayer",
-        "Particle Steering Mayer",
-        "Rao Mease Mayer",
-        "Tubular Reactor Mayer"
+        "Catalyst Mixing"
     ]
 
     files = [
-        "ipopt_exact_times.dat",
-        "ipopt_quasi_newton_times.dat",
-        "blocksqp2_exact_times.dat",
-        "blocksqp2_quasi_newton_times.dat"
+        "IPOPT_exact_times.log",
+        "IPOPT_quasi_newton_times.log",
+        "blockSQP2_exact_times.log",
+        "blockSQP2_quasi_newton_times.log"
     ]
 
     x_labels = [0, 2, 4, 8, 16, 32, 64]
@@ -60,7 +55,7 @@ if __name__ == "__main__":
 
             if counter == 0:
                 output += ",\nlegend columns=-1, % Horizontal legend \n"
-                output += "legend entries={IPOPT exact, IPOPT Quasi-Newton, BlockSQP2 exact, BlockSQP2 Quasi-Newton},\n"
+                output += "legend entries={IPOPT exact, IPOPT Quasi-Newton, blockSQP2 exact, blockSQP2 Quasi-Newton},\n"
                 output += "legend style={draw=none, fill=none, font=\\footnotesize,\n"
                 output += "column sep=0.5cm,\n"
                 output += "/tikz/every odd column/.append style={column sep=0cm},},\n"

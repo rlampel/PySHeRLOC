@@ -162,14 +162,14 @@ Benchmark problems can be found inside the `Apps` folder. Those include, among m
             Van der Pol OED
         </td>
     </tr>
-</table
+</table>
 
 
 ## Using the new BlockSQP
 To use the new version of BlockSQP instead of the one included in CasADi, you have to change the path inside the file `blocksqp_path.txt`:
 ```
 # path to your local installation of BlockSQP 2:
-{MY_PATH}/blocksqp/python_Interface
+{PATH_TO_LOCAL_INSTALLATION}/blockSQP2/Python
 ```
 
 ## Using the CasADi BlockSQP

@@ -68,8 +68,8 @@ class OCGUI(GUIBaseClass.GUI):
                              "last",
                              "all but last",
                              "sensitivity"]
-        self.solvers = ["BlockSQP 2",
-                        "BlockSQP",
+        self.solvers = ["blockSQP2",
+                        "blockSQP",
                         "fatrop",
                         "IPOPT"]
 
@@ -98,7 +98,7 @@ class OCGUI(GUIBaseClass.GUI):
         # initial values of GUI variables
         self.mayer_term.set(False)
         self.problem_name.set(self.options[0])
-        self.solver_name.set(self.solvers[0])
+        self.solver_name.set(self.solvers[-1])
         self.lifting_type.set(self.lift_options[0])
         self.init_type.set("automatic")
         self.num_lifting_points.set(64)
@@ -451,7 +451,7 @@ class OCGUI(GUIBaseClass.GUI):
         init_vals["sol"] = cs.vertcat(q_init, s_init)
         grid["lift"] = lifting_points
 
-        if self.optimize_init.get() and curr_solver != "BlockSQP 2":
+        if self.optimize_init.get():
             sel_time_points = [time_points[i] for i in range(len(time_points)) if lifting_points[i]]
             s_init, info_lift = refine_lifting(
                 curr_problem, grid, sel_time_points, s_init, q_init
@@ -527,7 +527,7 @@ class OCGUI(GUIBaseClass.GUI):
                     self.canvas.draw()
                     self.canvas.flush_events()
 
-            case "BlockSQP":
+            case "blockSQP":
                 mycallback = cb.MyCallback('mycallback',
                                            cs.vertcat(*w).shape[0],
                                            cs.vertcat(*g).shape[0],
@@ -557,19 +557,20 @@ class OCGUI(GUIBaseClass.GUI):
                     refine = 5
                 else:
                     refine = -1
-                import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
+                import utils.blocksqp_utils.create_blocksqp_problem as create_blockSQP2_prob
                 opts = {}
                 opts["plot_iter"] = True
                 opts["exact_hess"] = self.exact_hessian.get()
                 opts["refinement"] = refine
                 opts["optim_lamb"] = self.optimize_lamb.get()
-                opts["optim_init"] = self.optimize_init.get()
                 opts["log_results"] = self.log_results.get()
                 opts["always_auto"] = self.always_auto.get()
                 opts["auto_condense"] = self.auto_condense.get()
-                better_ipopt.create_blocksqp_problem(curr_problem, grid, init,
-                                                     [self.toolbar, self.canvas, self.fig],
-                                                     opts)
+                create_blockSQP2_prob.create_blocksqp_problem(
+                    curr_problem, grid, init,
+                    [self.toolbar, self.canvas, self.fig],
+                    opts
+                )
         self.stop_function()
 
 

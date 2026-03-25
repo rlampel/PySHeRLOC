@@ -60,8 +60,8 @@ class OEDGUI(GUIBaseClass.GUI):
             "sensitivity"
         ]
         self.solvers = [
-            "BlockSQP 2",
-            "BlockSQP",
+            "blockSQP2",
+            "blockSQP",
             "fatrop",
             "IPOPT"
         ]
@@ -80,7 +80,6 @@ class OEDGUI(GUIBaseClass.GUI):
         self.num_control_points = tk.IntVar()
         self.l1_refinement = tk.BooleanVar()
         self.exact_hessian = tk.BooleanVar()
-        self.cond_init = tk.BooleanVar()
         self.optimize_lamb = tk.BooleanVar()
         self.log_results = tk.BooleanVar()
         self.always_auto = tk.BooleanVar()
@@ -88,7 +87,7 @@ class OEDGUI(GUIBaseClass.GUI):
 
         # initial values of GUI variables
         self.problem_name.set(self.options[0])
-        self.solver_name.set(self.solvers[0])
+        self.solver_name.set(self.solvers[-1])
         self.lifting_type.set(self.lift_options[0])
         self.optimize_init.set(False)
         self.oed_criterion.set(self.oed_criteria[0])
@@ -98,7 +97,6 @@ class OEDGUI(GUIBaseClass.GUI):
         self.function_running.set(False)
         self.l1_refinement.set(False)
         self.exact_hessian.set(False)
-        self.cond_init.set(False)
         self.optimize_lamb.set(False)
         self.log_results.set(False)
         self.always_auto.set(False)
@@ -182,15 +180,6 @@ class OEDGUI(GUIBaseClass.GUI):
         tk.Checkbutton(master=self.left_frame,
                        text='exact Hessian',
                        variable=self.exact_hessian,
-                       onvalue=True,
-                       offvalue=False
-                       ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
-        row_counter += 1
-
-        # Improve conditioning
-        tk.Checkbutton(master=self.left_frame,
-                       text='improve Hess. condition',
-                       variable=self.cond_init,
                        onvalue=True,
                        offvalue=False
                        ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
@@ -489,7 +478,7 @@ class OEDGUI(GUIBaseClass.GUI):
                     self.canvas.draw()
                     self.canvas.flush_events()
 
-            case "BlockSQP":
+            case "blockSQP":
                 mycallback = cb.MyCallback('mycallback',
                                            cs.vertcat(*w).shape[0],
                                            cs.vertcat(*g).shape[0],
@@ -518,19 +507,20 @@ class OEDGUI(GUIBaseClass.GUI):
                     refine = 5
                 else:
                     refine = -1
-                import utils.blocksqp_utils.create_blocksqp_problem as better_ipopt
+                import utils.blocksqp_utils.create_blocksqp_problem as create_blockSQP2_prob
                 opts = {}
                 opts["plot_iter"] = True
                 opts["exact_hess"] = self.exact_hessian.get()
-                opts["cond_init"] = self.cond_init.get()
                 opts["refinement"] = refine
                 opts["optim_lamb"] = self.optimize_lamb.get()
                 opts["log_results"] = self.log_results.get()
                 opts["always_auto"] = self.always_auto.get()
                 opts["auto_condense"] = self.auto_condense.get()
-                better_ipopt.create_blocksqp_problem(curr_problem, grid, init,
-                                                     [self.toolbar, self.canvas, self.fig],
-                                                     opts, condense_mode="OED")
+                create_blockSQP2_prob.create_blocksqp_problem(
+                    curr_problem, grid, init,
+                    [self.toolbar, self.canvas, self.fig],
+                    opts, condense_mode="OED"
+                )
         self.stop_function()
 
 

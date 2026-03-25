@@ -38,12 +38,6 @@ if __name__ == "__main__":
 
     excluded = [
         "Catalyst Mixing",
-        "LQR Mayer",
-        "Ocean Mayer",
-        "F8 Aircraft Mayer",
-        "Particle Steering Mayer",
-        "Rao Mease Mayer",
-        "Tubular Reactor Mayer",
         "Three Tank OED"
     ]
 

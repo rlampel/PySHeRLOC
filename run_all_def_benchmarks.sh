@@ -10,7 +10,7 @@ if [[ ! -f "$INPUT_FILE" ]]; then
 fi
 
 # Arrays for the boolean combinations
-SOLVERS=("blockSQP2" "IPOPT")
+SOLVERS=("IPOPT")
 BOOLS=("n" "y")
 
 # Nested loops for all 8 combinations (-fs, -hess, -cond)
