@@ -79,11 +79,16 @@ def fsinit_heur_new(xi_temp, sort_grid, grid, curr_problem):
     return xi_temp.reshape(-1), g, J
 
 
-def fsinit_merit(xi_temp, fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
-                 lam_new,
-                 opt_err=1., old_point=None, exact_hess=True, lag_der=None,
-                 mode="default"):
-    """Replace the current states by FSInit if merit and KKT do not get too much worse.
+def fsinit_merit(
+    xi_temp, fsinit, lam_temp,
+    lbg, ubg, lbx, ubx,
+    func_f, func_g,
+    lam_new,
+    opt_err=1.,
+    lag_der=None,
+    mode="default"
+):
+    """Replace the current states by FSInit if merit or optimality error improve.
 
     Keyword arguments:
         xi_temp  -- primal variables
@@ -94,6 +99,8 @@ def fsinit_merit(xi_temp, fsinit, lam_temp, lbg, ubg, lbx, ubx, func_f, func_g,
         func_f -- objective function
         func_g -- constraint function
         opt_err -- value of current optimality error
+        lag_der -- derivative of the Lagrangian
+        mode -- selected mode, 'default' activates the optimality check close to the solution
     """
 
     # violation for the current iterate
@@ -151,6 +158,7 @@ def refine_lifting(curr_problem, grid, starting_times, s_temp, q_temp, mu=1, mod
         s_temp  -- state variables at the shooting points
         q_temp  -- control variables
         mu  -- penalty parameter
+        mode -- use 'init' for the efficient version assuming constant controls
     """
     s_dim = curr_problem.s_dim
     q_dim = curr_problem.q_dim

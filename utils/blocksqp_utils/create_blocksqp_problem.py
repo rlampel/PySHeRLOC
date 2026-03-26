@@ -24,16 +24,22 @@ from blockSQP2 import Problemspec
 plot_lift = []
 
 
-def graph_lift_heuristic(xi_temp, lam_temp, sort_grid, grid, ode, s_dim, q_dim,
-                         starting_times, curr_problem,
-                         num_control_points, num_time_points, iter=0):
+def graph_lift_heuristic(
+    xi_temp, lam_temp,
+    sort_grid, grid,
+    ode,
+    s_dim, q_dim,
+    starting_times,
+    curr_problem,
+    num_control_points, num_time_points,
+    iter=0
+):
     global plot_lift  # only for plotting
 
     if iter > 3:
         plot_lift = [0] * num_time_points
         return xi_temp
 
-    print(np.linalg.norm(lam_temp, np.inf))
     # sort back
     xi_temp = np.array(sort_back(xi_temp, sort_grid, s_dim, q_dim))
 
@@ -60,13 +66,23 @@ def to_blocks_LT(sparse_hess: cs.DM, hessBlock_index):
     return blocks
 
 
-def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
-                            i_start=0, log=None, sr1_init=None, bfgs_init=None,
-                            lam_init=None, accepted_hess_init=[], condense_mode="default"):
+def create_blocksqp_problem(
+    curr_problem,
+    grid,
+    start_point,
+    GUI,
+    input_opts,
+    i_start=0,
+    log=None,
+    sr1_init=None,
+    bfgs_init=None,
+    lam_init=None,
+    accepted_hess_init=[],
+    condense_mode="default"
+):
     global plot_lift
     max_iter = input_opts.get("max_iter", 100)
-    # apply FSInit based on dynamic programming ever {refinement} iterations
-    # (-1) to turn it off
+    # apply FSInit based on dynamic programming, set (-1) to turn it off
     refinement = input_opts.get("refinement", -1)
     exact_hess = input_opts.get("exact_hess", False)
     optim_lamb = input_opts.get("optim_lamb", False)
@@ -171,7 +187,7 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         lam_opt = adapt_init.get_best_lam(start_point, lbx, ubx,
                                           func_g, lbg, ubg,
                                           problem.grad_f(start_point), jac_g_start)
-        print("L1 Norm: ", cs.norm_inf(lam_opt))
+        print("Using custom initial Lagrange multipliers.")
         problem.lam_start = lam_opt
     elif lam_init is not None:
         # initialize lambda with given values (e.g. obtained via condensing)
@@ -201,13 +217,13 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             xi_temp[:] = fsinit_merit(
                 xi_temp, fsinit, problem.lam_start, lbg, ubg, lbx, ubx, func_f, func_g,
                 lam_new=lam_temp_in,
-                exact_hess=exact_hess, lag_der=full_lag_der,
+                lag_der=full_lag_der,
                 mode=condense_mode
             )
             return 0
         problem.set_stepModification(step_modifier)
 
-    elif refinement != -1:
+    if refinement != -1:
         def step_modifier(xi_temp, lam_temp):
             xi_temp[:] = graph_lift_heuristic(
                 xi_temp, problem.lam_start, sort_grid, grid, ode, s_dim, q_dim,
@@ -255,18 +271,6 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
         xi_temp = np.array(meth.get_xi()).reshape(-1)
         lam_temp = meth.get_lambda()
 
-        if False:
-            # compute lagrange multipliers which minimze the KKT error
-            jac_g_curr = problem.jac_g(xi_temp)
-            lam_temp_np = np.array(lam_temp).reshape(-1, 1)
-            lam_temp_np = adapt_init.get_best_lam(xi_temp, lbx, ubx,
-                                                  func_g, lbg, ubg,
-                                                  problem.grad_f(xi_temp), jac_g_curr)
-            np.array(lam_temp, copy=False)[:] = lam_temp_np.reshape(-1, 1)
-            meth.set_iterate_(meth.get_xi(), lam_temp, False)  # third argument to reset QN-Hessian
-            lam_temp = meth.get_lambda()
-
-        # accepted_hess += [meth.vars.hess_num_accepted]
         accepted_hess += [meth.vars.QP_num_accepted]
 
         # get norm of rhs
@@ -315,9 +319,9 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
                     xi_temp, fsinit, np.array(lam_temp).reshape(-1, 1),
                     lbg, ubg, lbx, ubx, func_f, func_g,
                     lam_new=lam_temp_in,
-                    opt_err=meth.vars.tol, exact_hess=exact_hess,
-                    lag_der=full_lag_der, mode=condense_mode
-
+                    opt_err=meth.vars.tol,
+                    lag_der=full_lag_der,
+                    mode=condense_mode
                 )
                 return 0
             problem.set_stepModification(step_modifier)
@@ -345,8 +349,11 @@ def create_blocksqp_problem(curr_problem, grid, start_point, GUI, input_opts,
             # plot vertical lines
             if change_lift:
                 yl, yu = ax.get_ylim()
-                ax.vlines([grid["time"][k] for k in range(len(grid["time"])) if plot_lift[k] == 1],
-                          yl, yu, color="gray", linestyles="dashed", alpha=0.5)
+                if len(plot_lift) == len(grid["time"]):
+                    ax.vlines(
+                        [grid["time"][k] for k in range(len(grid["time"])) if plot_lift[k] == 1],
+                        yl, yu, color="gray", linestyles="dashed", alpha=0.5
+                    )
 
             ax.set_title(f"Iteration {i}", fontsize=22)
             canvas.draw()

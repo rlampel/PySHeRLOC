@@ -28,7 +28,6 @@ def get_best_lam(x_curr, lbx, ubx, g, lbg, ubg, grad_f, grad_g):
             active_count += 1
         else:
             lam_opt += [0]
-    # print("lam_opt: ", lam_opt)
     return np.array(lam_opt).reshape(-1)
 
 

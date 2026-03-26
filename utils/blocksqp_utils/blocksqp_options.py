@@ -23,7 +23,7 @@ def get_blocksqp_options(exact_hess=False):
 
     # use exact Hessian
     if exact_hess:
-        opts.hess_approx = "exact"  # 0, (2 für exakt)
+        opts.hess_approx = "exact"
     else:
         opts.hess_approx = "SR1"
 

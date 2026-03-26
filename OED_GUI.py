@@ -167,13 +167,9 @@ class OEDGUI(GUIBaseClass.GUI):
         drop.grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
         row_counter += 1
 
-        # Callback with refinement
-        tk.Checkbutton(master=self.left_frame,
-                       text='refinement callback',
-                       variable=self.l1_refinement,
-                       onvalue=True,
-                       offvalue=False
-                       ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
+        # General settings
+        tk.Label(self.left_frame, text="General settings:").grid(row=row_counter, column=0,
+                                                                 sticky="NSEW", padx=5, pady=5)
         row_counter += 1
 
         # Use exact Hessian matrix
@@ -185,6 +181,20 @@ class OEDGUI(GUIBaseClass.GUI):
                        ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
         row_counter += 1
 
+        # Plot convergence graph
+        tk.Checkbutton(master=self.left_frame,
+                       text='plot convergence',
+                       variable=self.log_results,
+                       onvalue=True,
+                       offvalue=False
+                       ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
+        row_counter += 1
+
+        # blockSQP2 settings
+        tk.Label(self.left_frame, text="blockSQP2 settings:").grid(row=row_counter, column=0,
+                                                                   sticky="NSEW", padx=5, pady=5)
+        row_counter += 1
+
         # Compute better initial Lagrange multipliers
         tk.Checkbutton(master=self.left_frame,
                        text='optimize Lagr. multipliers',
@@ -194,10 +204,10 @@ class OEDGUI(GUIBaseClass.GUI):
                        ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)
         row_counter += 1
 
-        # Plot convergence graph
+        # Callback with refinement
         tk.Checkbutton(master=self.left_frame,
-                       text='plot convergence',
-                       variable=self.log_results,
+                       text='merit-based FSInit',
+                       variable=self.l1_refinement,
                        onvalue=True,
                        offvalue=False
                        ).grid(row=row_counter, column=0, sticky="NSEW", padx=5, pady=5)

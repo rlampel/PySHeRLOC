@@ -44,7 +44,7 @@ Alternatively, you can run the corresponding benchmark with the desire arguments
 python benchmark_def.py -n "Bioreactor" -hess y -solver blockSQP2
 
 # benchmarks the automatic condensing algorithm for Lotka OED using the Quasi-Newton variant of blockSQP2 
-python benchmark_def.py -n "Lotka OED" -hess n -fs n -cond y
+python benchmark_algs.py -n "Lotka OED" -hess n -fs n -cond y
 ```
 
 The problem titles refer to the description on [mintOC](mintoc.de). They can be solved using IPOPT, blockSQP, blockSQP2, or fatrop.
@@ -194,6 +194,6 @@ Benchmark problems can be found inside the `Apps` folder. Those include, among m
 
 
 ## References
-[1]: [Lampel, R., Sager, S.: "On lifting strategies for optimal control problems"]
+[1]: [Lampel, R., Sager, S.: "On lifting strategies for optimal control problems"](https://optimization-online.org/?p=34160)
 
 [2]: [Wittmann, R.: "blockSQP2"](https://github.com/rlampel/blockSQP2)
