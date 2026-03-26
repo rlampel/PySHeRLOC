@@ -46,7 +46,7 @@ class OEDGUI(GUIBaseClass.GUI):
             "Van der Pol OED",
         ]
 
-        self.oed_criteria = ["A", "D", "M", "-1/(A*A)"]
+        self.oed_criteria = ["A", "M", "-1/(A*A)"]
         self.init_types = [
             "automatic",
             "linear",
@@ -142,7 +142,7 @@ class OEDGUI(GUIBaseClass.GUI):
         row_counter += 1
 
         # Select OED criterion
-        tk.Label(self.left_frame, text="Select lifting approach:"
+        tk.Label(self.left_frame, text="Select OED criterion:"
                  ).grid(row=row_counter, column=0,
                         sticky="NSEW", padx=5, pady=5)
         row_counter += 1
