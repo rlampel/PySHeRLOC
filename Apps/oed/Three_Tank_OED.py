@@ -11,11 +11,13 @@ class problem(BaseOCClass.super_problem):
     s_dim = x_dim + p_dim * x_dim + p_dim * (p_dim + 1) // 2 + o_dim
     is_inverse = False
     reg_init = 1.e-1
+    state_indices = [i for i in range(3)]
 
     def __init__(self, criterion="A"):
         BaseOCClass.super_problem.__init__(self, self.s_dim, self.q_dim)
         self.criterion = criterion
         self.state_labels = [r"$x_{" + str(i) + "}$" for i in range(self.x_dim)]
+        '''
         self.state_labels += [r"$G_{" + str(i) + "," + str(j) + "}$"
                               for i in range(1, self.p_dim + 1)
                               for j in range(1, self.x_dim + 1)]
@@ -23,6 +25,7 @@ class problem(BaseOCClass.super_problem):
             self.state_labels += [r"$F_{" + str(i) + "," + str(j) + "}$"
                                   for i in range(1, j + 1)]
         self.state_labels += [r"$z_{" + str(i) + "}$" for i in range(self.o_dim)]
+        '''
         self.control_labels = [r"$u_{" + str(i) + "}$" for i in range(3)]
         self.control_labels += [r"$w_{" + str(i) + "}$" for i in range(self.o_dim)]
 

@@ -1,2 +1,2 @@
 # path to your local installation of BlockSQP 2:
-{PATH_TO_LOCAL_INSTALLATION}/blockSQP2/Python
+/home/robert/Dokumente/Promotion/NLP_Solvers/BlockSQP/blockSQP2_neu_neu/blockSQP2/Python

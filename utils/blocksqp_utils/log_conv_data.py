@@ -125,7 +125,7 @@ def add_kappa(log, prim_vars, old_prim_vars, dual_vars, meth_vars,
     return log
 
 
-def print_logs_table(log):
+def print_logs(log):
     """Print the entries of the dictionary in table format.
 
     Keyword arguments:
@@ -152,8 +152,8 @@ def print_logs_table(log):
     print(tabulate(table_data, headers="firstrow", tablefmt="fancy_outline"))
 
 
-def print_logs(log):
-    """Print the entries of the dictionary in table format.
+def print_logs_conv_metrics(log):
+    """Print the entries of the dictionary for optimality error and step sizes.
 
     Keyword arguments:
         log  -- dictionary to store the quantities in

@@ -330,14 +330,18 @@ class OCGUI(GUIBaseClass.GUI):
 
         match curr_lifting_type:
             case "all":
-                # lifting_points = [1 for i in range(num_lifts + 1)]
                 lifting_points = [0] * len(time_points)
 
                 if num_lifts != 0:
                     lift_interval = num_controls // num_lifts
-                    for i in range(num_controls + 1):
-                        if i % lift_interval == 0:
-                            lifting_points[i] = 1
+                    print("Rounding to closest equidistant subset of the control grid.")
+                    if lift_interval == 0:
+                        # lift everywhere
+                        lifting_points = [1] * len(time_points)
+                    else:
+                        for i in range(num_controls + 1):
+                            if i % lift_interval == 0:
+                                lifting_points[i] = 1
                 print("number of lifting points: ", sum(lifting_points))
             case "adaptive":
                 lifting_points = sensitivity_lifting.refine_lifting(curr_problem, init_vals, grid)
@@ -438,9 +442,14 @@ class OCGUI(GUIBaseClass.GUI):
 
                 if num_lifts != 0:
                     lift_interval = num_controls // num_lifts
-                    for i in range(num_controls + 1):
-                        if i % lift_interval == 0:
-                            lifting_points[i] = 1
+                    print("Rounding to closest equidistant subset of the control grid.")
+                    if lift_interval == 0:
+                        # lift everywhere
+                        lifting_points = [1] * len(time_points)
+                    else:
+                        for i in range(num_controls + 1):
+                            if i % lift_interval == 0:
+                                lifting_points[i] = 1
                 print("number of lifting points: ", sum(lifting_points))
             case "adaptive":
                 lifting_points = sensitivity_lifting.refine_lifting(curr_problem, init_vals, grid)

@@ -60,21 +60,14 @@ def monitor_kkt_conv(kkt_norm_list, accepted_hess):
     Keyword arguments:
         kkt_norm_list  -- list of previous KKT error norms
     """
-    # compare current contraction with the previous one
-
     if len(kkt_norm_list) < 3:
         # too few past data points to compare the contraction
         return False
 
-    # print("current accepted hess: ", accepted_hess[-1])
-    # if accepted_hess[-1] < 4:
-    #     return False
-
     avg_kkt = float(kkt_norm_list[-2])
     curr_kkt = kkt_norm_list[-1]
 
-    # print("prev contr: ", prev_contr, " curr contr: ", curr_contr)
-    print("avg: ", avg_kkt, " current: ", curr_kkt)
+    print("previous: ", avg_kkt, " current: ", curr_kkt)
 
     if avg_kkt < curr_kkt:
         # contraction is getting worse

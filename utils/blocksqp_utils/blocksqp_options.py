@@ -7,7 +7,7 @@ import blockSQP2 as blockSQP
 
 
 def get_blocksqp_options(exact_hess=False):
-    """Return the options for blockSQP.
+    """Return the options for blockSQP2.
 
     Keyword arguments:
         exact_hess -- boolean that indicates whether the exact Hessian shall be used.

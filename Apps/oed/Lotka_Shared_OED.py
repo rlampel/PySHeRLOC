@@ -11,10 +11,13 @@ class problem(BaseOCClass.super_problem):
     s_dim = x_dim + p_dim * x_dim + p_dim * (p_dim + 1) // 2 + o_dim
     is_inverse = False  # the Fisher Matrix is given by an ode
     reg_init = 1.e-1
+    state_indices = [i for i in range(3)]
 
     def __init__(self, criterion="A"):
         BaseOCClass.super_problem.__init__(self, self.s_dim, self.q_dim)
         self.criterion = criterion
+        self.state_labels = [r"$x_0$", r"$x_1$", r"$x_2$"]
+        self.control_labels = [r"$u$", r"$w_0$", r"$w_1$", r"$w_2$"]
 
     def get_ode(self):
         # given constants

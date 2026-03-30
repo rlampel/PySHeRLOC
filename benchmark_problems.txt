@@ -34,7 +34,8 @@ Three Tank
 Three Tank Mayer
 Van der Pol
 Van der Pol Mayer
-Lotka OED
 Dielectr Particle OED
 Jackson OED
+Lotka OED
+Lotka Shared OED
 Van der Pol OED

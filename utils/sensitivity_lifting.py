@@ -74,8 +74,6 @@ def get_sensitivity(curr_problem, partial_grid, controls, multipliers={}, mayer=
     # print("end time: ", end_time, ", partial grid: ", partial_grid)
     if (end_time == partial_grid["part_time"][-1]) and mayer:
         J_total = curr_problem.objective_end(Sk_temp) + J_total
-        # Sk_temp = 0  # cs.DM([])
-        # print("end point included")
 
     comb = cs.vertcat(Sk, controls)
     Integral_Func = cs.Function("Int", [comb], [Sk_temp])
@@ -177,15 +175,11 @@ def get_grid_sens(problem, init, grid):
 
     # assume that the ODE can be evaluated solved over the entire time interval
     lift_indc = [i for i in range(num_time_points) if grid["lift"][i] or i == 0]
-    # print("lifting indices: ", lift_indc)
-    # iterate backwards over all time points
     for i in range(len(lift_indc) - 1):
         start, end = lift_indc[i], lift_indc[i + 1]
         d_int_norm, d_j_norm = eval_norm(
             problem, grid, controls, s_init, start, end + 1
         )
-        # print(f"Interval: {time_points[start:end + 1]}")
-        # print(f" current norms: {d_int_norm, d_j_norm}")
         norm_list += [[d_int_norm, d_j_norm]]
 
     max_state_sens = max([float(norm_list[i][0]) for i in range(len(norm_list))])

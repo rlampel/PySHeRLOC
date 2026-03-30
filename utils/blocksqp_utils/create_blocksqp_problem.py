@@ -90,6 +90,7 @@ def create_blocksqp_problem(
     auto_condense = input_opts.get("auto_condense", False)
     plot_iter = input_opts.get("plot_iter", False)
     log_results = input_opts.get("log_results", False)
+    log_kappa = input_opts.get("log_kappa", False)
 
     opts = blocksqp_options.get_blocksqp_options(exact_hess)
 
@@ -281,15 +282,14 @@ def create_blocksqp_problem(
                 old_point, old_lambd
             )
 
-            '''
-            # compute kappa values of Hessian approximation
-            # (very expensive)
-            log = log_conv_data.add_kappa(
-                log, xi_temp, old_point, np.array(lam_temp).reshape(-1, 1),
-                meth.vars, lag_hess, lag_der, problem.jac_g, sparsity_pattern,
-                hess_type=1
-            )
-            '''
+            if log_kappa:
+                # compute kappa values of Hessian approximation
+                # (very expensive)
+                log = log_conv_data.add_kappa(
+                    log, xi_temp, old_point, np.array(lam_temp).reshape(-1, 1),
+                    meth.vars, lag_hess, lag_der, problem.jac_g, sparsity_pattern,
+                    hess_type=1
+                )
 
         default_init["sol"] = np.array(sort_back(xi_temp, sort_grid, s_dim, q_dim))
 
